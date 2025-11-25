@@ -128,7 +128,7 @@ export function SalesPipeline() {
   }))
 
   const totalRevenue = customers.reduce((sum, c) => sum + c.revenue, 0)
-  const numCustomers = baseMetrics.numCustomers
+  const numCustomers = Math.round(baseMetrics.numCustomers * multiplier)
   const avgRevenue = totalRevenue / numCustomers
   const numProductsSold = Math.round(baseMetrics.numProductsSold * multiplier)
 
