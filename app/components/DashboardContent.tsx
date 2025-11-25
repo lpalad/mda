@@ -8,10 +8,9 @@ import { PartnerPerformance } from '@/app/components/SectionPartnerPerformance'
 import { SalesPipeline } from '@/app/components/SectionSalesPipeline'
 import { CustomerLifetimeValue } from '@/app/components/SectionCustomerLifetimeValue'
 import { Lead } from '@/app/types/lead'
-import { BarChart3, TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
+import { TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
 
 const sidebarSections = [
-  { id: 'executive-summary', label: 'Executive Summary', icon: BarChart3 },
   { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search },
   { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap },

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ArrowRight, TrendingUp, BarChart3, Users, Target, Zap, PieChart, LineChart } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Target, Zap, PieChart } from 'lucide-react'
 
 // Helper Components
 
@@ -226,18 +226,6 @@ export default function DashboardHub() {
 
         {/* Dashboard Cards Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Executive Summary */}
-          <SectionCard
-            icon={BarChart3}
-            title="Executive Summary"
-            kpi="▲ 18%"
-            subtitle="Quarter-on-quarter revenue growth."
-            status="On track"
-            footer="The firm in one page."
-            visual={<MiniBars />}
-            href="/dashboard?section=executive-summary"
-          />
-
           {/* Marketing ROI */}
           <SectionCard
             icon={TrendingUp}
