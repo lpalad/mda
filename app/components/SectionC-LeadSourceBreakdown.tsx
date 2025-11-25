@@ -47,6 +47,17 @@ export function SectionC({ leads }: SectionCProps) {
     (a, b) => parseFloat(a.highQualityPercentage) - parseFloat(b.highQualityPercentage)
   )[0]
 
+  if (!topChannel || !lowQualityChannel) {
+    return (
+      <section className="mb-12">
+        <div className="bg-white border border-slate-200 rounded-lg p-8 text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Lead Source Breakdown</h2>
+          <p className="text-slate-600">No leads found for the selected time period.</p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="mb-12">
       <div className="mb-6">
