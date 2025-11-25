@@ -39,18 +39,18 @@ interface KpiCircleProps {
 }
 
 const KpiCircle: React.FC<KpiCircleProps> = ({ label, value, delta, progress, color }) => {
-  const circumference = 2 * Math.PI * 45
+  const circumference = 2 * Math.PI * 56
   const strokeDashoffset = circumference - (progress / 100) * circumference
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-32 h-32 flex items-center justify-center">
-        <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
+      <div className="relative w-40 h-40 flex items-center justify-center">
+        <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="56" fill="none" stroke="#e2e8f0" strokeWidth="8" />
           <circle
-            cx="60"
-            cy="60"
-            r="45"
+            cx="75"
+            cy="75"
+            r="56"
             fill="none"
             stroke={color}
             strokeWidth="8"
