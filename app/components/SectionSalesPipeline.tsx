@@ -90,11 +90,11 @@ const CustomerRevenueBars: React.FC<CustomerRevenueBarProps> = ({ customers }) =
         const width = (c.revenue / maxRevenue) * 100
         const formatted = `$${c.revenue.toLocaleString()}`
         return (
-          <div key={c.name} className="flex items-center gap-3">
+          <div key={c.name} className="flex items-center gap-3 transition-all duration-300">
             <span className="w-40 truncate text-[11px] text-slate-600">{c.name}</span>
             <div className="relative h-2 flex-1 rounded-full bg-slate-100">
               <div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400"
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400 transition-all duration-300"
                 style={{ width: `${width}%` }}
               />
             </div>

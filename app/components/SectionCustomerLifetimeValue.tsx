@@ -53,8 +53,8 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { name: 'Divorced', value: Math.round(503 * multiplier), fill: '#ef4444' },
   ]
 
-  // Flights Booked by Month and Year (Line chart)
-  const flightsBookedData = [
+  // Base data
+  const baseFlightsBookedData = [
     { month: 1, 2017: 45000, 2018: 52000 },
     { month: 2, 2017: 52000, 2018: 58000 },
     { month: 3, 2017: 48000, 2018: 61000 },
@@ -69,8 +69,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { month: 12, 2017: 48000, 2018: 45000 },
   ]
 
-  // CLV by Month and Year (Line chart)
-  const clvByMonthData = [
+  const baseClvByMonthData = [
     { month: 1, 2017: 2100, 2018: 2300 },
     { month: 2, 2017: 2050, 2018: 2350 },
     { month: 3, 2017: 2200, 2018: 2400 },
@@ -85,8 +84,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { month: 12, 2017: 1950, 2018: 1720 },
   ]
 
-  // Flights by Province data
-  const flightsByProvinceData = [
+  const baseFlightsByProvinceData = [
     { name: 'Ontario', value: 85000 },
     { name: 'British Columbia', value: 62000 },
     { name: 'Quebec', value: 58000 },
@@ -100,8 +98,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { name: 'Prince Edward Island', value: 2000 },
   ]
 
-  // Dollar Points Redeemed by Province data
-  const dollarPointsData = [
+  const baseDollarPointsData = [
     { name: 'Ontario', value: 450000 },
     { name: 'British Columbia', value: 320000 },
     { name: 'Quebec', value: 280000 },
@@ -115,8 +112,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { name: 'Prince Edward Island', value: 8000 },
   ]
 
-  // Flights Booked Changes by Loyalty Card (Area chart)
-  const flightsChangesData = [
+  const baseFlightsChangesData = [
     { month: 1, Star: 28000, Nova: 18000, Aurora: 12000 },
     { month: 2, Star: 32000, Nova: 19000, Aurora: 11000 },
     { month: 3, Star: 35000, Nova: 21000, Aurora: 13000 },
@@ -131,8 +127,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { month: 12, Star: 22000, Nova: 14000, Aurora: 9000 },
   ]
 
-  // CLV for Cities by Gender (Table data)
-  const citiesData = [
+  const baseCitiesData = [
     { city: 'Toronto', female: 314935159, male: 322782976, total: 638738135 },
     { city: 'Vancouver', female: 247729104, male: 240248220, total: 487977324 },
     { city: 'Montreal', female: 210462191, male: 205613264, total: 416081455 },
@@ -146,6 +141,43 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     { city: 'Davison', female: 48928768, male: 37744998, total: 86673766 },
     { city: 'Creek', female: 40301311, male: 45140869, total: 85442180 },
   ]
+
+  // Scale data based on multiplier
+  const flightsBookedData = baseFlightsBookedData.map(item => ({
+    month: item.month,
+    2017: Math.round(item[2017] * multiplier),
+    2018: Math.round(item[2018] * multiplier),
+  }))
+
+  const clvByMonthData = baseClvByMonthData.map(item => ({
+    month: item.month,
+    2017: Math.round(item[2017] * multiplier),
+    2018: Math.round(item[2018] * multiplier),
+  }))
+
+  const flightsByProvinceData = baseFlightsByProvinceData.map(item => ({
+    name: item.name,
+    value: Math.round(item.value * multiplier),
+  }))
+
+  const dollarPointsData = baseDollarPointsData.map(item => ({
+    name: item.name,
+    value: Math.round(item.value * multiplier),
+  }))
+
+  const flightsChangesData = baseFlightsChangesData.map(item => ({
+    month: item.month,
+    Star: Math.round(item.Star * multiplier),
+    Nova: Math.round(item.Nova * multiplier),
+    Aurora: Math.round(item.Aurora * multiplier),
+  }))
+
+  const citiesData = baseCitiesData.map(item => ({
+    city: item.city,
+    female: Math.round(item.female * multiplier),
+    male: Math.round(item.male * multiplier),
+    total: Math.round(item.total * multiplier),
+  }))
 
   return (
     <section className="space-y-8">
@@ -396,9 +428,9 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
               {citiesData.map((city, idx) => (
                 <tr key={idx} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4 font-medium text-slate-900">{city.city}</td>
-                  <td className="px-6 py-4 text-right text-slate-700">${(city.female / 1000000).toFixed(2)}M</td>
-                  <td className="px-6 py-4 text-right text-slate-700">${(city.male / 1000000).toFixed(2)}M</td>
-                  <td className="px-6 py-4 text-right font-semibold text-slate-900">${(city.total / 1000000).toFixed(2)}M</td>
+                  <td className="px-6 py-4 text-right text-slate-700">${(city.female as number / 1000000).toFixed(2)}M</td>
+                  <td className="px-6 py-4 text-right text-slate-700">${(city.male as number / 1000000).toFixed(2)}M</td>
+                  <td className="px-6 py-4 text-right font-semibold text-slate-900">${(city.total as number / 1000000).toFixed(2)}M</td>
                 </tr>
               ))}
             </tbody>

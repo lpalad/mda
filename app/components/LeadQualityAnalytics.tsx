@@ -235,13 +235,45 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
 
   const multiplier = periodMultipliers[selectedPeriod]
 
-  const scoreDistribution = getQualityScoreDistribution(leads)
+  const baseScoreDistribution = getQualityScoreDistribution(leads)
   const segmentation = getLeadSegmentation(leads)
-  const sourceQuality = getSourceVsQuality(leads)
+  const baseSourceQuality = getSourceVsQuality(leads)
   const featureImportance = getFeatureImportance()
-  const funnelData = getFunnelByQuality(leads)
-  const heatmapData = getQualityHeatmap(leads)
-  const trendData = getQualityTrendLine(leads)
+  const baseFunnelData = getFunnelByQuality(leads)
+  const baseHeatmapData = getQualityHeatmap(leads)
+  const baseTrendData = getQualityTrendLine(leads)
+
+  // Scale chart data based on multiplier
+  const scoreDistribution = baseScoreDistribution.map(item => ({
+    ...item,
+    count: Math.round(item.count * multiplier),
+  }))
+
+  const sourceQuality = baseSourceQuality.map(item => ({
+    ...item,
+    High: Math.round(item.High * multiplier),
+    Medium: Math.round(item.Medium * multiplier),
+    Low: Math.round(item.Low * multiplier),
+  }))
+
+  const funnelData = baseFunnelData.map(item => ({
+    ...item,
+    High: Math.round(item.High * multiplier),
+    Medium: Math.round(item.Medium * multiplier),
+    Low: Math.round(item.Low * multiplier),
+  }))
+
+  const heatmapData = baseHeatmapData.map(item => ({
+    ...item,
+    score: Math.round(item.score * multiplier),
+  }))
+
+  const trendData = baseTrendData.map(item => ({
+    ...item,
+    High: Math.round(item.High * multiplier),
+    Medium: Math.round(item.Medium * multiplier),
+    Low: Math.round(item.Low * multiplier),
+  }))
 
   // Apply multiplier to metrics for visual change with period selection
   const scaledSegmentation = {
