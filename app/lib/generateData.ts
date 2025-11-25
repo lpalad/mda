@@ -566,3 +566,76 @@ export function getQualityTrendLine(leads: Lead[]) {
     Low: counts.low,
   }))
 }
+
+export interface PartnerMetrics {
+  name: string
+  newMatters: number
+  newClientsFromMarketing: number
+  leadToMatterConversion: number
+  status: 'On track' | 'Needs support' | 'Watch'
+}
+
+export function getPartnerPerformanceMetrics(leads: Lead[]): PartnerMetrics[] {
+  const partners = ['Partner A', 'Partner B', 'Partner C', 'Partner D']
+
+  // Map leads to partners based on hash of lead ID
+  const partnerLeads: Map<string, Lead[]> = new Map()
+  partners.forEach(partner => partnerLeads.set(partner, []))
+
+  leads.forEach(lead => {
+    const partnerIndex = lead.id.charCodeAt(0) % 4
+    const partner = partners[partnerIndex]
+    partnerLeads.get(partner)?.push(lead)
+  })
+
+  return partners.map((partner) => {
+    const pLeads = partnerLeads.get(partner) || []
+    const totalLeads = pLeads.length
+
+    // New matters: converted leads from this period
+    const newMatters = pLeads.filter(l => l.converted).length
+
+    // New clients from marketing: high quality leads that converted
+    const newClientsFromMarketing = pLeads.filter(l => l.qualityTier === 'High' && l.converted).length
+
+    // Lead to matter conversion rate
+    const leadToMatterConversion = totalLeads > 0
+      ? Math.round((newMatters / totalLeads) * 100)
+      : 0
+
+    // Status based on conversion rate and volume
+    let status: 'On track' | 'Needs support' | 'Watch' = 'On track'
+    if (leadToMatterConversion < 15) status = 'Needs support'
+    else if (leadToMatterConversion < 25) status = 'Watch'
+
+    return {
+      name: partner,
+      newMatters,
+      newClientsFromMarketing,
+      leadToMatterConversion,
+      status,
+    }
+  })
+}
+
+export function getPartnerSummaryMetrics(leads: Lead[]) {
+  const totalSpend = leads.reduce((sum, l) => sum + l.costPerLead, 0)
+  const convertedLeads = leads.filter(l => l.converted)
+  const totalRevenue = convertedLeads.reduce((sum, l) => sum + l.revenuePotential, 0)
+  const avgCostPerQualifiedLead = Math.round(
+    leads.filter(l => l.qualityTier === 'High').length > 0
+      ? totalSpend / leads.filter(l => l.qualityTier === 'High').length
+      : 0
+  )
+  const overallConversion = leads.length > 0
+    ? Math.round((convertedLeads.length / leads.length) * 100)
+    : 0
+  const newRevenue = totalRevenue
+
+  return {
+    totalSpend,
+    avgCostPerQualifiedLead,
+    overallConversion,
+    newRevenue,
+  }
+}
