@@ -83,9 +83,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
           )}
 
           {/* Sales Pipeline Section */}
-          {currentSection === 'sales-pipeline' && (
-            <SalesPipeline leads={filteredLeads} />
-          )}
+          {currentSection === 'sales-pipeline' && <SalesPipeline />}
 
           {/* Customer Lifetime Value Section */}
           {currentSection === 'client-lifetime-value' && (

@@ -1,228 +1,189 @@
 'use client'
 
-import { Lead } from '@/app/types/lead'
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer,
-} from 'recharts'
+import React from 'react'
+import { Users, DollarSign, Package2, Activity } from 'lucide-react'
 
-interface SalesPipelineProps {
-  leads: Lead[]
+// ===== DATA =====
+
+const customers = [
+  { name: 'Visionary Enterprises', revenue: 21000 },
+  { name: 'Swift Enterprises', revenue: 19047 },
+  { name: 'United Solutions', revenue: 18121 },
+  { name: 'Titan Enterprises', revenue: 17743 },
+  { name: 'Fusion Systems', revenue: 16751 },
+  { name: 'Alpha Corporation', revenue: 12440 },
+]
+
+const totalRevenue = customers.reduce((sum, c) => sum + c.revenue, 0)
+const numCustomers = customers.length
+const avgRevenue = totalRevenue / numCustomers
+const numProductsSold = 122
+
+// ===== HELPER COMPONENTS =====
+
+const HalfGauge: React.FC<{ fill: number; color: string }> = ({ fill, color }) => {
+  const background = `conic-gradient(${color} ${fill}%, #e5e7eb 0)`
+  return (
+    <div className="relative flex h-24 w-24 items-center justify-center">
+      <div className="h-full w-full rounded-full" style={{ background }} />
+      <div className="absolute h-16 w-16 rounded-full bg-white" />
+    </div>
+  )
 }
 
-export function SalesPipeline({ leads }: SalesPipelineProps) {
-  // Generate customer revenue data
-  const customerRevenue = [
-    { name: 'Visionary Enterprises', revenue: 21000 },
-    { name: 'Swift Enterprises', revenue: 19047 },
-    { name: 'United Solutions', revenue: 18121 },
-    { name: 'Titan Enterprises', revenue: 17743 },
-    { name: 'Fusion Systems', revenue: 16751 },
-    { name: 'Alpha Corporation', revenue: 12440 },
-  ]
+interface HalfMetricCardProps {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: string
+  sublabel: string
+  fill: number
+  color: string
+}
 
-  const productRevenue = [
-    { name: 'Enterprise', avgPrice: 2552.94, quantity: 17, amount: 43400 },
-    { name: 'DA Solutions', avgPrice: 3327.50, quantity: 10, amount: 33275 },
-    { name: 'Business', avgPrice: 570.00, quantity: 50, amount: 28500 },
-    { name: 'Standard', avgPrice: 1616.00, quantity: 15, amount: 24240 },
-    { name: 'Web design', avgPrice: 2400.00, quantity: 10, amount: 24000 },
-    { name: 'Alpha', avgPrice: 937.50, quantity: 20, amount: 18750 },
-  ]
-
-  const totalCustomerRevenue = customerRevenue.reduce((sum, c) => sum + c.revenue, 0)
-  const totalProductRevenue = productRevenue.reduce((sum, p) => sum + p.amount, 0)
-  const totalProductQuantity = productRevenue.reduce((sum, p) => sum + p.quantity, 0)
-  const avgRevenuePerCustomer = Math.round(totalCustomerRevenue / customerRevenue.length)
-  const numCustomers = customerRevenue.length
-
-  // Top 10 customers chart data
-  const top10Customers = customerRevenue.sort((a, b) => b.revenue - a.revenue)
-
-  // Top 10 products chart data
-  const top10Products = productRevenue.sort((a, b) => b.amount - a.amount)
-
+const HalfMetricCard: React.FC<HalfMetricCardProps> = ({
+  icon: Icon,
+  label,
+  value,
+  sublabel,
+  fill,
+  color,
+}) => {
   return (
-    <section className="space-y-8">
-      {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Sales Pipeline</h1>
-        <p className="text-slate-600 mt-1">Revenue breakdown by customers and products.</p>
-      </div>
-
-      {/* KPI CARDS (Top Section) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Num of Customers Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Num of Customers</p>
-          <p className="text-4xl font-bold text-slate-900">{numCustomers}</p>
-          <p className="text-xs text-slate-600 mt-2">Active customers</p>
-        </div>
-
-        {/* Total Revenue Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Total Revenue</p>
-          <p className="text-4xl font-bold text-slate-900">${(totalCustomerRevenue / 1000).toFixed(0)}k</p>
-          <p className="text-xs text-slate-600 mt-2">From customers</p>
-        </div>
-
-        {/* Avg Revenue Per Customer Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Avg Revenue Per Customer</p>
-          <p className="text-4xl font-bold text-slate-900">${(avgRevenuePerCustomer / 1000).toFixed(1)}k</p>
-          <p className="text-xs text-slate-600 mt-2">Customer value</p>
-        </div>
-
-        {/* Total Products Sold Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Num of Products Sold</p>
-          <p className="text-4xl font-bold text-slate-900">{totalProductQuantity}</p>
-          <p className="text-xs text-slate-600 mt-2">Total quantity</p>
+    <div className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+      <div className="mb-2 flex flex-row items-center justify-between space-y-0">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-slate-900 text-slate-50">
+            <Icon className="h-4 w-4" />
+          </div>
+          <p className="text-xs font-semibold text-slate-700">{label}</p>
         </div>
       </div>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xl font-semibold text-slate-900">{value}</p>
+          <p className="mt-1 text-[11px] text-slate-500">{sublabel}</p>
+        </div>
+        <HalfGauge fill={fill} color={color} />
+      </div>
+    </div>
+  )
+}
 
-      {/* CUSTOMER REVENUE TABLE */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">Customer Revenue</h2>
-          <p className="text-sm text-slate-600 mt-1">Revenue by customer</p>
+const CustomerRevenueBars: React.FC = () => {
+  const maxRevenue = Math.max(...customers.map((c) => c.revenue))
+  return (
+    <div className="mt-4 space-y-3">
+      {customers.map((c) => {
+        const width = (c.revenue / maxRevenue) * 100
+        const formatted = `$${c.revenue.toLocaleString()}`
+        return (
+          <div key={c.name} className="flex items-center gap-3">
+            <span className="w-40 truncate text-[11px] text-slate-600">{c.name}</span>
+            <div className="relative h-2 flex-1 rounded-full bg-slate-100">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400"
+                style={{ width: `${width}%` }}
+              />
+            </div>
+            <span className="w-20 text-right text-[11px] font-medium text-slate-700">{formatted}</span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ===== MAIN COMPONENT =====
+
+export function SalesPipeline() {
+  return (
+    <div className="min-h-screen w-full bg-slate-50 px-4 py-8 text-slate-900 sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6">
+        {/* Header Card */}
+        <div className="rounded-3xl bg-white/90 p-6 shadow-sm ring-1 ring-slate-200">
+          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Sales Pipeline</h1>
+          <p className="mt-1 text-sm text-slate-500">Revenue breakdown by customers and products.</p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Customer Name</th>
-                <th className="px-6 py-4 text-right font-semibold text-slate-900">Revenue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customerRevenue.map((customer, idx) => (
-                <tr
-                  key={idx}
-                  className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
-                >
-                  <td className="px-6 py-4 font-medium text-slate-900">
-                    {customer.name}
-                  </td>
-                  <td className="px-6 py-4 text-right text-slate-700">
-                    ${customer.revenue.toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-              <tr className="bg-slate-50 font-semibold border-t-2 border-slate-300">
-                <td className="px-6 py-4 text-slate-900">Total</td>
-                <td className="px-6 py-4 text-right text-slate-900">
-                  ${totalCustomerRevenue.toLocaleString()}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* PRODUCT REVENUE TABLE */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">Product Revenue</h2>
-          <p className="text-sm text-slate-600 mt-1">Revenue breakdown by product</p>
+        {/* KPI Cards Grid */}
+        <div className="grid gap-4 sm:grid-cols-4">
+          <HalfMetricCard
+            icon={Users}
+            label="Num of Customers"
+            value={numCustomers.toString()}
+            sublabel="Active customers"
+            fill={80}
+            color="#38bdf8"
+          />
+          <HalfMetricCard
+            icon={DollarSign}
+            label="Total Revenue"
+            value={`$${(totalRevenue / 1000).toFixed(0)}k`}
+            sublabel="From customers"
+            fill={65}
+            color="#22c55e"
+          />
+          <HalfMetricCard
+            icon={Activity}
+            label="Avg Revenue Per Customer"
+            value={`$${(avgRevenue / 1000).toFixed(1)}k`}
+            sublabel="Customer value"
+            fill={70}
+            color="#a855f7"
+          />
+          <HalfMetricCard
+            icon={Package2}
+            label="Num of Products Sold"
+            value={numProductsSold.toString()}
+            sublabel="Total quantity"
+            fill={55}
+            color="#f97316"
+          />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Product Name</th>
-                <th className="px-6 py-4 text-right font-semibold text-slate-900">Average Price</th>
-                <th className="px-6 py-4 text-center font-semibold text-slate-900">Quantity</th>
-                <th className="px-6 py-4 text-right font-semibold text-slate-900">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productRevenue.map((product, idx) => (
-                <tr
-                  key={idx}
-                  className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
-                >
-                  <td className="px-6 py-4 font-medium text-slate-900">
-                    {product.name}
-                  </td>
-                  <td className="px-6 py-4 text-right text-slate-700">
-                    ${product.avgPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </td>
-                  <td className="px-6 py-4 text-center text-slate-700">
-                    {product.quantity}
-                  </td>
-                  <td className="px-6 py-4 text-right text-slate-700">
-                    ${product.amount.toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-              <tr className="bg-slate-50 font-semibold border-t-2 border-slate-300">
-                <td className="px-6 py-4 text-slate-900">Total</td>
-                <td className="px-6 py-4 text-right text-slate-900">
-                  ${(productRevenue.reduce((sum, p) => sum + p.avgPrice, 0) / productRevenue.length).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </td>
-                <td className="px-6 py-4 text-center font-semibold text-slate-900">
-                  {totalProductQuantity}
-                </td>
-                <td className="px-6 py-4 text-right font-semibold text-slate-900">
-                  ${totalProductRevenue.toLocaleString()}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        {/* Customer Revenue Card */}
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900">Customer Revenue</h2>
+          <p className="mt-1 text-xs text-slate-500">Revenue by customer (top 6).</p>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            {/* Left: Visual Bars */}
+            <div>
+              <p className="text-xs font-medium text-slate-700">Revenue distribution</p>
+              <p className="mt-1 text-[11px] text-slate-500">
+                Longer bar = higher revenue. Quickly see your top customers.
+              </p>
+              <CustomerRevenueBars />
+            </div>
+
+            {/* Right: Table */}
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <table className="min-w-full divide-y divide-slate-200 text-xs">
+                <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Customer Name</th>
+                    <th className="px-4 py-2 text-right">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-[11px] text-slate-700">
+                  {customers.map((c) => (
+                    <tr key={c.name} className="hover:bg-slate-50">
+                      <td className="px-4 py-2">{c.name}</td>
+                      <td className="px-4 py-2 text-right">${c.revenue.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  <tr className="bg-slate-50/80">
+                    <td className="px-4 py-2 font-semibold text-slate-900">Total</td>
+                    <td className="px-4 py-2 text-right font-semibold text-slate-900">
+                      ${totalRevenue.toLocaleString()}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* TOP 10 CUSTOMERS BY REVENUE CHART */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Top Customers by Revenue</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={top10Customers}
-            layout="vertical"
-            margin={{ top: 5, right: 30, left: 200, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis type="number" stroke="#64748b" />
-            <YAxis type="category" dataKey="name" stroke="#64748b" width={190} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-              }}
-              formatter={(value: any) => `$${value.toLocaleString()}`}
-            />
-            <Bar dataKey="revenue" fill="#0d9488" radius={[0, 8, 8, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* TOP 10 PRODUCTS BY REVENUE CHART */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Top Products by Revenue</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={top10Products}
-            margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="name" stroke="#64748b" angle={-45} textAnchor="end" height={80} />
-            <YAxis stroke="#64748b" label={{ value: 'Revenue ($)', angle: -90, position: 'insideLeft' }} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-              }}
-              formatter={(value: any) => `$${value.toLocaleString()}`}
-            />
-            <Bar dataKey="amount" fill="#6366f1" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
+    </div>
   )
 }
