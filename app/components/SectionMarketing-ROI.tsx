@@ -58,8 +58,35 @@ export function MarketingROI({ leads }: MarketingROIProps) {
         <p className="text-slate-600 mt-1">See what pays. Cut what doesn't.</p>
       </div>
 
+      {/* KPI CARDS (Top Section) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Overall ROI Card */}
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+          <p className="text-sm text-slate-600 mb-2">Overall ROI</p>
+          <p className={`text-4xl font-bold ${overallROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {overallROI}%
+          </p>
+          <p className="text-xs text-slate-600 mt-2">{overallROI >= 0 ? '↑ Profitable' : '↓ Loss'}</p>
+        </div>
+
+        {/* Cost per HQ Lead Card */}
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+          <p className="text-sm text-slate-600 mb-2">Cost per HQ Lead</p>
+          <p className="text-4xl font-bold text-slate-900">${avgCostPerHQLead}</p>
+          <p className="text-xs text-slate-600 mt-2">Efficiency metric</p>
+        </div>
+
+        {/* Total Spend Card */}
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+          <p className="text-sm text-slate-600 mb-2">Monthly Spend</p>
+          <p className="text-4xl font-bold text-slate-900">${(totalSpend / 1000).toFixed(0)}k</p>
+          <p className="text-xs text-slate-600 mt-2">Across all channels</p>
+        </div>
+      </div>
+
       {/* SECTION 1 — ROI BY CHANNEL */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-slate-900 mb-4">ROI by Channel</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={roiByChannel}
@@ -84,32 +111,6 @@ export function MarketingROI({ leads }: MarketingROIProps) {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
-
-      {/* SECTION 2 — COST METRICS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Overall ROI Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Overall ROI</p>
-          <p className={`text-4xl font-bold ${overallROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {overallROI}%
-          </p>
-          <p className="text-xs text-slate-600 mt-2">{overallROI >= 0 ? '↑ Profitable' : '↓ Loss'}</p>
-        </div>
-
-        {/* Cost per HQ Lead Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Cost per HQ Lead</p>
-          <p className="text-4xl font-bold text-slate-900">${avgCostPerHQLead}</p>
-          <p className="text-xs text-slate-600 mt-2">Efficiency metric</p>
-        </div>
-
-        {/* Total Spend Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Monthly Spend</p>
-          <p className="text-4xl font-bold text-slate-900">${(totalSpend / 1000).toFixed(0)}k</p>
-          <p className="text-xs text-slate-600 mt-2">Across all channels</p>
-        </div>
       </div>
 
       {/* Cost by Channel Chart */}
