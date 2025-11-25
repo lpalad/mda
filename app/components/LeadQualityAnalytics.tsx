@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Lead } from '@/app/types/lead'
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell,
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import {
   getQualityScoreDistribution, getLeadSegmentation, getSourceVsQuality,
@@ -21,77 +21,194 @@ const QUALITY_COLORS = {
   Low: '#ef4444',
 }
 
-const TREND_COLORS = {
-  High: 'emerald',
-  Medium: 'amber',
-  Low: 'rose',
+// Card primitives
+interface CardProps {
+  children: React.ReactNode
+  className?: string
 }
 
-// Helper component for trend sparklines
-interface TrendBarsProps {
+const Card: React.FC<CardProps> = ({ children, className = '' }) => (
+  <div className={`bg-white border border-slate-200 rounded-lg p-6 ${className}`}>
+    {children}
+  </div>
+)
+
+interface CardHeaderProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const CardHeader: React.FC<CardHeaderProps> = ({ children, className = '' }) => (
+  <div className={`mb-4 ${className}`}>{children}</div>
+)
+
+interface CardTitleProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const CardTitle: React.FC<CardTitleProps> = ({ children, className = '' }) => (
+  <h3 className={`text-sm font-semibold text-slate-900 ${className}`}>{children}</h3>
+)
+
+interface CardContentProps {
+  children: React.ReactNode
+  className?: string
+}
+
+const CardContent: React.FC<CardContentProps> = ({ children, className = '' }) => (
+  <div className={className}>{children}</div>
+)
+
+// Sparkline component with SVG
+interface SparklineProps {
   values: number[]
-  variant: 'High' | 'Medium' | 'Low'
+  color: string
 }
 
-const TrendBars: React.FC<TrendBarsProps> = ({ values, variant }) => {
-  const max = Math.max(...values)
-  const colorMap: Record<string, string> = {
-    emerald: 'bg-emerald-400/70',
-    amber: 'bg-amber-400/70',
-    rose: 'bg-rose-400/70',
-  }
-  const color = TREND_COLORS[variant]
-  const bgColor = colorMap[color] || 'bg-slate-400/70'
+const Sparkline: React.FC<SparklineProps> = ({ values, color }) => {
+  const width = 100
+  const height = 40
+  const padding = 4
+  const chartWidth = width - padding * 2
+  const chartHeight = height - padding * 2
+
+  const minVal = Math.min(...values)
+  const maxVal = Math.max(...values)
+  const range = maxVal - minVal || 1
+
+  const points = values.map((val, idx) => {
+    const x = padding + (idx / (values.length - 1)) * chartWidth
+    const y = height - padding - ((val - minVal) / range) * chartHeight
+    return `${x},${y}`
+  }).join(' ')
+
+  const pathData = `M ${values.map((val, idx) => {
+    const x = padding + (idx / (values.length - 1)) * chartWidth
+    const y = height - padding - ((val - minVal) / range) * chartHeight
+    return `${x},${y}`
+  }).join(' L ')}`
+
+  const areaPath = `M ${padding},${height - padding} L ${pathData.substring(2)} L ${width - padding},${height - padding} Z`
 
   return (
-    <div className="mt-3 flex h-8 items-end gap-1">
-      {values.map((v, i) => {
-        const height = (v / max) * 100
-        return (
-          <div
-            key={i}
-            className={`flex-1 rounded-sm ${bgColor}`}
-            style={{ height: `${height}%`, minHeight: '2px' }}
-          />
-        )
-      })}
-    </div>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="mt-3 w-full">
+      <defs>
+        <linearGradient id={`gradient-${color}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#gradient-${color})`} />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="2" />
+    </svg>
   )
 }
 
-// Helper component for quality cards with trends
-interface QualityCardProps {
+// Quality card with sparkline
+interface LeadQualityCardProps {
   label: string
   percentage: number
   count: number
   trend: number[]
   trendLabel: string
-  variant: 'High' | 'Medium' | 'Low'
+  color: string
 }
 
-const QualityCard: React.FC<QualityCardProps> = ({
+const LeadQualityCard: React.FC<LeadQualityCardProps> = ({
   label,
   percentage,
   count,
   trend,
   trendLabel,
-  variant,
+  color,
 }) => {
-  const colorClass = {
-    High: 'text-emerald-600',
-    Medium: 'text-amber-600',
-    Low: 'text-rose-600',
-  }[variant]
+  return (
+    <Card className="animate-stagger">
+      <CardHeader>
+        <CardTitle>{label}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p style={{ color }} className="text-3xl font-semibold">
+          {percentage}%
+        </p>
+        <p className="mt-1 text-sm text-slate-700 font-semibold">{count.toLocaleString()} leads</p>
+        <Sparkline values={trend} color={color} />
+        <p className="mt-2 text-[11px] text-slate-500">{trendLabel}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
+// SVG Donut Chart component
+interface DonutSegment {
+  name: string
+  value: number
+  color: string
+}
+
+interface DonutChartProps {
+  segments: DonutSegment[]
+}
+
+const DonutChart: React.FC<DonutChartProps> = ({ segments }) => {
+  const total: number = segments.reduce((sum, s) => sum + s.value, 0)
+  const radius = 45
+  const circumference = 2 * Math.PI * radius
+  let currentOffset = 0
+  const dashArrays = segments.map((segment) => {
+    const ratio = segment.value / total
+    const offset = currentOffset
+    currentOffset += ratio * circumference
+    return { offset, ratio, circumference }
+  })
 
   return (
-    <div className="flex flex-col rounded-lg border border-slate-200 bg-white/90 p-5 shadow-sm animate-stagger">
-      <p className="text-xs font-medium text-slate-600">{label}</p>
-      <p className={`mt-2 text-3xl font-semibold ${colorClass}`}>{percentage}%</p>
-      <p className="mt-1 text-sm text-slate-700 font-semibold">{count.toLocaleString()} leads</p>
-
-      <TrendBars values={trend} variant={variant} />
-
-      <p className="mt-2 text-[11px] text-slate-500">{trendLabel}</p>
+    <div className="flex flex-col items-center">
+      <svg width="140" height="140" viewBox="0 0 140 140" className="mb-4">
+        <circle
+          cx="70"
+          cy="70"
+          r={radius}
+          fill="none"
+          stroke="#e2e8f0"
+          strokeWidth="12"
+        />
+        {segments.map((segment, idx) => {
+          const ratio = segment.value / total
+          const offset = dashArrays.slice(0, idx).reduce((sum: number, d) => sum + d.circumference * d.ratio, 0)
+          return (
+            <circle
+              key={segment.name}
+              cx="70"
+              cy="70"
+              r={radius}
+              fill="none"
+              stroke={segment.color}
+              strokeWidth="12"
+              strokeLinecap="round"
+              style={{
+                strokeDasharray: `${ratio * circumference} ${circumference}`,
+                transform: `rotate(${(offset / circumference) * 360}deg)`,
+                transformOrigin: '70px 70px',
+              }}
+            />
+          )
+        })}
+      </svg>
+      <div className="space-y-2 w-full">
+        {segments.map((segment) => (
+          <div key={segment.name} className="flex items-center gap-2">
+            <div
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: segment.color }}
+            />
+            <span className="text-xs text-slate-600">
+              {segment.name} ({Math.round((segment.value / total) * 100)}%)
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -130,15 +247,15 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
   const scaledSegmentation = {
     high: {
       count: Math.round(segmentation.high.count * multiplier),
-      percentage: Math.round(segmentation.high.percentage * (0.8 + Math.random() * 0.4)),
+      percentage: Math.round(Number(segmentation.high.percentage) * (0.8 + Math.random() * 0.4)),
     },
     medium: {
       count: Math.round(segmentation.medium.count * multiplier),
-      percentage: Math.round(segmentation.medium.percentage * (0.8 + Math.random() * 0.4)),
+      percentage: Math.round(Number(segmentation.medium.percentage) * (0.8 + Math.random() * 0.4)),
     },
     low: {
       count: Math.round(segmentation.low.count * multiplier),
-      percentage: Math.round(segmentation.low.percentage * (0.8 + Math.random() * 0.4)),
+      percentage: Math.round(Number(segmentation.low.percentage) * (0.8 + Math.random() * 0.4)),
     },
   }
 
@@ -147,12 +264,6 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
   scaledSegmentation.high.percentage = Math.round((scaledSegmentation.high.percentage / totalPercentage) * 100)
   scaledSegmentation.medium.percentage = Math.round((scaledSegmentation.medium.percentage / totalPercentage) * 100)
   scaledSegmentation.low.percentage = 100 - scaledSegmentation.high.percentage - scaledSegmentation.medium.percentage
-
-  const donutData = [
-    { name: 'High', value: scaledSegmentation.high.count, fill: QUALITY_COLORS.High },
-    { name: 'Medium', value: scaledSegmentation.medium.count, fill: QUALITY_COLORS.Medium },
-    { name: 'Low', value: scaledSegmentation.low.count, fill: QUALITY_COLORS.Low },
-  ]
 
   // Generate trend data for each quality level (7 data points)
   const generateTrend = (base: number, variance: number = 0.05): number[] => {
@@ -173,96 +284,71 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
         <h1 className="text-3xl font-bold text-slate-900">Lead Quality Analytics</h1>
         <p className="text-slate-600 mt-1">B2B Law Firm - Marketing Performance Dashboard</p>
 
-        {/* Period Filter */}
-        <div className="mt-4 flex items-center gap-3">
-          <span className="text-sm font-medium text-slate-700">Period:</span>
-          <div className="flex gap-2 flex-wrap">
-            {PERIOD_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setSelectedPeriod(option.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPeriod === option.value
-                    ? 'bg-primary text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+        {/* Period Filter - Rounded Pills */}
+        <div className="mt-6 flex items-center gap-3 flex-wrap">
+          {PERIOD_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setSelectedPeriod(option.value)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                selectedPeriod === option.value
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* KPI CARDS + DONUT CHART (Top Section) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-stagger-container">
-        {/* High-Quality Card with Trend */}
-        <QualityCard
+        {/* High-Quality Card with SVG Sparkline */}
+        <LeadQualityCard
           label="High-Quality Leads"
           percentage={scaledSegmentation.high.percentage}
           count={scaledSegmentation.high.count}
           trend={highTrend}
           trendLabel="↑ +3 pts vs last 30 days"
-          variant="High"
+          color={QUALITY_COLORS.High}
         />
 
-        {/* Medium-Quality Card with Trend */}
-        <QualityCard
+        {/* Medium-Quality Card with SVG Sparkline */}
+        <LeadQualityCard
           label="Medium-Quality Leads"
           percentage={scaledSegmentation.medium.percentage}
           count={scaledSegmentation.medium.count}
           trend={mediumTrend}
           trendLabel="→ Stable vs last 30 days"
-          variant="Medium"
+          color={QUALITY_COLORS.Medium}
         />
 
-        {/* Low-Quality Card with Trend */}
-        <QualityCard
+        {/* Low-Quality Card with SVG Sparkline */}
+        <LeadQualityCard
           label="Low-Quality Leads"
           percentage={scaledSegmentation.low.percentage}
           count={scaledSegmentation.low.count}
           trend={lowTrend}
           trendLabel="↓ -2 pts vs last 30 days"
-          variant="Low"
+          color={QUALITY_COLORS.Low}
         />
 
-        {/* Quality Mix Donut Chart */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
-          <p className="text-xs font-medium text-slate-700 text-center">Quality Mix</p>
-          <p className="text-[11px] text-slate-500 text-center mb-3">Last 30 Days</p>
-          <ResponsiveContainer width="100%" height={140}>
-            <PieChart>
-              <Pie
-                data={donutData}
-                cx="50%"
-                cy="50%"
-                innerRadius={45}
-                outerRadius={70}
-                paddingAngle={2}
-                dataKey="value"
-              >
-                {donutData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          {/* Legend */}
-          <div className="mt-4 space-y-2 border-t border-slate-100 pt-3">
-            <div className="flex items-center gap-2 text-[11px]">
-              <div className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span className="text-slate-700">High ({scaledSegmentation.high.percentage}%)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[11px]">
-              <div className="h-2 w-2 rounded-full bg-amber-500" />
-              <span className="text-slate-700">Medium ({scaledSegmentation.medium.percentage}%)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[11px]">
-              <div className="h-2 w-2 rounded-full bg-rose-500" />
-              <span className="text-slate-700">Low ({scaledSegmentation.low.percentage}%)</span>
-            </div>
-          </div>
-        </div>
+        {/* Quality Mix SVG Donut Chart */}
+        <Card className="animate-stagger flex flex-col items-center justify-center">
+          <CardHeader>
+            <CardTitle className="text-center">Quality Mix</CardTitle>
+          </CardHeader>
+          <CardContent className="w-full flex flex-col items-center">
+            <DonutChart
+              segments={[
+                { name: 'High', value: scaledSegmentation.high.count, color: QUALITY_COLORS.High },
+                { name: 'Medium', value: scaledSegmentation.medium.count, color: QUALITY_COLORS.Medium },
+                { name: 'Low', value: scaledSegmentation.low.count, color: QUALITY_COLORS.Low },
+              ]}
+            />
+          </CardContent>
+        </Card>
       </div>
 
       {/* CHART 1 — Quality Score Distribution Histogram */}
