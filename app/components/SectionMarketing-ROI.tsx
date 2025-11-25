@@ -79,27 +79,40 @@ const PERIOD_MULTIPLIERS: Record<string, number> = {
   'All Time': 12,
 }
 
-const ChannelPerformanceCard: React.FC = () => {
-  const channels = [
+interface ChannelPerformanceCardProps {
+  multiplier: number
+}
+
+const ChannelPerformanceCard: React.FC<ChannelPerformanceCardProps> = ({ multiplier }) => {
+  const baseChannels = [
     {
       name: 'Facebook',
       color: '#0ea5e9',
       data: [3, 5, 4, 8, 6, 9, 7, 8],
-      metrics: { ctr: '2.4%', cpc: '$0.89', conversions: '324' },
+      baseMetrics: { ctr: 2.4, cpc: 0.89, conversions: 324 },
     },
     {
       name: 'Google',
       color: '#10b981',
       data: [5, 7, 6, 9, 8, 10, 9, 11],
-      metrics: { ctr: '3.1%', cpc: '$1.24', conversions: '512' },
+      baseMetrics: { ctr: 3.1, cpc: 1.24, conversions: 512 },
     },
     {
       name: 'LinkedIn',
       color: '#6366f1',
       data: [4, 6, 5, 7, 8, 9, 10, 11],
-      metrics: { ctr: '1.8%', cpc: '$2.15', conversions: '156' },
+      baseMetrics: { ctr: 1.8, cpc: 2.15, conversions: 156 },
     },
   ]
+
+  const channels = baseChannels.map((channel) => ({
+    ...channel,
+    metrics: {
+      ctr: (channel.baseMetrics.ctr * (0.9 + Math.random() * 0.2)).toFixed(1),
+      cpc: (channel.baseMetrics.cpc * (0.85 + Math.random() * 0.3)).toFixed(2),
+      conversions: Math.round(channel.baseMetrics.conversions * multiplier),
+    },
+  }))
 
   const maxHeight = 12
 
@@ -113,8 +126,8 @@ const ChannelPerformanceCard: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-slate-900">{channel.name}</h3>
               <div className="flex gap-4 text-xs">
-                <span className="text-slate-600">Best CTR: {channel.metrics.ctr}</span>
-                <span className="text-slate-600">Best CPC: {channel.metrics.cpc}</span>
+                <span className="text-slate-600">Best CTR: {channel.metrics.ctr}%</span>
+                <span className="text-slate-600">Best CPC: ${channel.metrics.cpc}</span>
                 <span className="text-slate-600">Conversions: {channel.metrics.conversions}</span>
               </div>
             </div>
@@ -139,13 +152,34 @@ const ChannelPerformanceCard: React.FC = () => {
   )
 }
 
-const CampaignPerformance: React.FC = () => {
-  const campaigns = [
-    { name: 'Campaign 3', ctr: 8.5, spend: '$2.64k', impressions: '728k', clicks: '1.75k', cpm: '$3.63', cpc: '$1.51' },
-    { name: 'Campaign 4', ctr: 6.2, spend: '$1.35k', impressions: '83k', clicks: '258', cpm: '$16.20', cpc: '$5.23' },
-    { name: 'Campaign 9', ctr: 5.8, spend: '$1.34k', impressions: '118k', clicks: '241', cpm: '$11.40', cpc: '$5.57' },
-    { name: 'Campaign 6', ctr: 9.1, spend: '$1.33k', impressions: '315k', clicks: '956', cpm: '$4.24', cpc: '$1.40' },
+interface CampaignPerformanceProps {
+  multiplier: number
+}
+
+const CampaignPerformance: React.FC<CampaignPerformanceProps> = ({ multiplier }) => {
+  const baseCampaigns = [
+    { name: 'Campaign 3', ctr: 8.5, spend: 2640, impressions: 728000, clicks: 1750, cpm: 3.63, cpc: 1.51 },
+    { name: 'Campaign 4', ctr: 6.2, spend: 1350, impressions: 83000, clicks: 258, cpm: 16.20, cpc: 5.23 },
+    { name: 'Campaign 9', ctr: 5.8, spend: 1340, impressions: 118000, clicks: 241, cpm: 11.40, cpc: 5.57 },
+    { name: 'Campaign 6', ctr: 9.1, spend: 1330, impressions: 315000, clicks: 956, cpm: 4.24, cpc: 1.40 },
   ]
+
+  const campaigns = baseCampaigns.map((campaign) => {
+    const scaledSpend = Math.round(campaign.spend * multiplier)
+    const scaledImpressions = Math.round(campaign.impressions * multiplier)
+    const scaledClicks = Math.round(campaign.clicks * multiplier)
+    const scaledCtr = campaign.ctr * (0.9 + Math.random() * 0.2)
+
+    return {
+      name: campaign.name,
+      ctr: scaledCtr,
+      spend: `$${(scaledSpend / 1000).toFixed(2)}k`,
+      impressions: scaledImpressions >= 1000000 ? `${(scaledImpressions / 1000000).toFixed(2)}m` : `${(scaledImpressions / 1000).toFixed(0)}k`,
+      clicks: scaledClicks >= 1000 ? `${(scaledClicks / 1000).toFixed(2)}k` : scaledClicks.toString(),
+      cpm: (campaign.cpm * (0.85 + Math.random() * 0.3)).toFixed(2),
+      cpc: (campaign.cpc * (0.9 + Math.random() * 0.2)).toFixed(2),
+    }
+  })
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-6">
@@ -195,8 +229,8 @@ const CampaignPerformance: React.FC = () => {
                     <td className="text-right py-2 text-slate-700">{campaign.spend}</td>
                     <td className="text-right py-2 text-slate-700">{campaign.impressions}</td>
                     <td className="text-right py-2 text-slate-700">{campaign.clicks}</td>
-                    <td className="text-right py-2 text-slate-700">{campaign.cpm}</td>
-                    <td className="text-right py-2 text-slate-700">{campaign.cpc}</td>
+                    <td className="text-right py-2 text-slate-700">${campaign.cpm}</td>
+                    <td className="text-right py-2 text-slate-700">${campaign.cpc}</td>
                   </tr>
                 ))}
               </tbody>
@@ -267,10 +301,10 @@ export function MarketingROI() {
       </div>
 
       {/* Channel Performance */}
-      <ChannelPerformanceCard />
+      <ChannelPerformanceCard multiplier={multiplier} />
 
       {/* Campaign Performance */}
-      <CampaignPerformance />
+      <CampaignPerformance multiplier={multiplier} />
 
       {/* Footer */}
       <div className="border-t border-slate-200 pt-6 flex items-center justify-between">
