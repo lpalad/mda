@@ -199,7 +199,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
                 onClick={() => setSelectedPeriod(option.value)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   selectedPeriod === option.value
-                    ? 'bg-primary text-white'
+                    ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -216,7 +216,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Education</h2>
           <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
+            <PieChart key={`education-${selectedPeriod}`}>
               <Pie
                 data={educationData}
                 cx="50%"
@@ -240,7 +240,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Loyalty Card</h2>
           <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
+            <PieChart key={`loyalty-${selectedPeriod}`}>
               <Pie
                 data={loyaltyCardData}
                 cx="50%"
@@ -264,7 +264,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Marital Status</h2>
           <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
+            <PieChart key={`marital-${selectedPeriod}`}>
               <Pie
                 data={maritalStatusData}
                 cx="50%"
@@ -291,7 +291,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Flights Booked by Month and Year</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={flightsBookedData}>
+            <LineChart data={flightsBookedData} key={`flights-${selectedPeriod}`}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="month" stroke="#64748b" />
               <YAxis stroke="#64748b" />
@@ -314,7 +314,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Month and Year</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={clvByMonthData}>
+            <LineChart data={clvByMonthData} key={`clv-${selectedPeriod}`}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="month" stroke="#64748b" />
               <YAxis stroke="#64748b" />
@@ -343,6 +343,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
             <BarChart
               data={flightsByProvinceData}
               layout="vertical"
+              key={`province-${selectedPeriod}`}
               margin={{ top: 5, right: 30, left: 150, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -368,6 +369,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
             <BarChart
               data={dollarPointsData}
               layout="vertical"
+              key={`points-${selectedPeriod}`}
               margin={{ top: 5, right: 30, left: 150, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -391,7 +393,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Flights Booked Changes by Loyalty Card</h2>
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={flightsChangesData}>
+          <AreaChart data={flightsChangesData} key={`area-${selectedPeriod}`}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis dataKey="month" stroke="#64748b" />
             <YAxis stroke="#64748b" />
