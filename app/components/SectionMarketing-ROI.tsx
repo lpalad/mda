@@ -70,6 +70,15 @@ const KpiCircle: React.FC<KpiCircleProps> = ({ label, value, delta, progress, co
   )
 }
 
+// Period multipliers for dynamic data scaling
+const PERIOD_MULTIPLIERS: Record<string, number> = {
+  'Last 7 Days': 0.15,
+  'Last 30 Days': 1,
+  'Last 90 Days': 3.2,
+  'Year to Date': 8.5,
+  'All Time': 12,
+}
+
 const ChannelPerformanceCard: React.FC = () => {
   const channels = [
     {
@@ -204,6 +213,29 @@ const CampaignPerformance: React.FC = () => {
 export function MarketingROI() {
   const [selectedPeriod, setSelectedPeriod] = useState('Last 30 Days')
 
+  // Base metrics for Last 30 Days
+  const baseMetrics = {
+    impressions: 3510000,
+    clicks: 13650,
+    ctr: 0.39,
+    cpm: 3.79,
+  }
+
+  // Apply period multiplier
+  const multiplier = PERIOD_MULTIPLIERS[selectedPeriod] || 1
+  const scaledImpressions = Math.round(baseMetrics.impressions * multiplier)
+  const scaledClicks = Math.round(baseMetrics.clicks * multiplier)
+  const scaledCTR = parseFloat((baseMetrics.ctr * (0.9 + Math.random() * 0.2)).toFixed(2))
+  const scaledCPM = parseFloat((baseMetrics.cpm * (0.85 + Math.random() * 0.3)).toFixed(2))
+
+  // Format values for display
+  const formatImpressions = scaledImpressions >= 1000000
+    ? (scaledImpressions / 1000000).toFixed(2) + 'M'
+    : (scaledImpressions / 1000).toFixed(1) + 'K'
+  const formatClicks = scaledClicks >= 1000
+    ? (scaledClicks / 1000).toFixed(2) + 'K'
+    : scaledClicks.toString()
+
   return (
     <section className="space-y-8">
       {/* Header */}
@@ -225,10 +257,10 @@ export function MarketingROI() {
 
       {/* KPI Circles */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KpiCircle label="Impressions" value="3.51M" delta="+12%" progress={72} color="#0ea5e9" />
-        <KpiCircle label="Clicks" value="13.65K" delta="+8%" progress={68} color="#10b981" />
-        <KpiCircle label="CTR" value="0.39%" delta="+0.07 pts" progress={39} color="#6366f1" />
-        <KpiCircle label="CPM" value="$3.79" delta="-6%" progress={55} color="#f59e0b" />
+        <KpiCircle label="Impressions" value={formatImpressions} delta={`+${Math.round(multiplier * 12)}%`} progress={Math.min(72 * Math.sqrt(multiplier) / 2.8, 100)} color="#0ea5e9" />
+        <KpiCircle label="Clicks" value={formatClicks} delta={`+${Math.round(multiplier * 8)}%`} progress={Math.min(68 * Math.sqrt(multiplier) / 2.8, 100)} color="#10b981" />
+        <KpiCircle label="CTR" value={`${scaledCTR}%`} delta={`+${(scaledCTR - baseMetrics.ctr).toFixed(2)} pts`} progress={Math.min(scaledCTR * 100, 100)} color="#6366f1" />
+        <KpiCircle label="CPM" value={`$${scaledCPM}`} delta={`${scaledCPM > baseMetrics.cpm ? '+' : '-'}${Math.abs(scaledCPM - baseMetrics.cpm).toFixed(2)}`} progress={Math.min(scaledCPM * 15, 100)} color="#f59e0b" />
       </div>
 
       {/* Channel Performance */}
