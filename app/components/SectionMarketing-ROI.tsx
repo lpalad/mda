@@ -1,452 +1,249 @@
 'use client'
 
-import { useState } from 'react'
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  ComposedChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ScatterChart,
-  Scatter,
-  Cell,
-} from 'recharts'
-import { Lead } from '@/app/types/lead'
-import {
-  getMarketingROIByChannel,
-  getCostPerLeadByChannel,
-  getSpendVsReturnData,
-  getCampaignQuadrantData,
-  getTrendData,
-} from '@/app/lib/generateData'
+import React, { useState } from 'react'
+import { ArrowRight, PieChart } from 'lucide-react'
 
-interface MarketingROIProps {
-  leads: Lead[]
+// ===== HELPER COMPONENTS =====
+
+const PeriodFilter: React.FC<{ selectedPeriod: string; onPeriodChange: (period: string) => void }> = ({
+  selectedPeriod,
+  onPeriodChange,
+}) => {
+  const periods = ['Last 7 Days', 'Last 30 Days', 'Last 90 Days', 'Year to Date', 'All Time']
+
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {periods.map((period) => (
+        <button
+          key={period}
+          onClick={() => onPeriodChange(period)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            selectedPeriod === period
+              ? 'bg-slate-900 text-white'
+              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+          }`}
+        >
+          {period}
+        </button>
+      ))}
+    </div>
+  )
 }
 
-const PERIOD_OPTIONS = [
-  { value: 'last-7', label: 'Last 7 Days' },
-  { value: 'last-30', label: 'Last 30 Days' },
-  { value: 'last-90', label: 'Last 90 Days' },
-  { value: 'year-to-date', label: 'Year to Date' },
-  { value: 'all-time', label: 'All Time' },
-]
+interface KpiCircleProps {
+  label: string
+  value: string
+  delta: string
+  progress: number
+  color: string
+}
 
-export function MarketingROI({ leads }: MarketingROIProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState('last-30')
+const KpiCircle: React.FC<KpiCircleProps> = ({ label, value, delta, progress, color }) => {
+  const circumference = 2 * Math.PI * 45
+  const strokeDashoffset = circumference - (progress / 100) * circumference
 
-  // Apply period-based multiplier to generate different data for each period
-  const periodMultipliers: Record<string, number> = {
-    'last-7': 0.12,
-    'last-30': 1,
-    'last-90': 3.2,
-    'year-to-date': 8.5,
-    'all-time': 12,
-  }
-
-  const multiplier = periodMultipliers[selectedPeriod]
-
-  const roiByChannel = getMarketingROIByChannel(leads)
-  const costPerLead = getCostPerLeadByChannel(leads)
-  const spendVsReturn = getSpendVsReturnData(leads)
-  const quadrantData = getCampaignQuadrantData(leads)
-  const trendData = getTrendData(leads)
-
-  // Scale data based on selected period
-  const scaledRoiByChannel = roiByChannel.map(item => ({
-    ...item,
-    spend: Math.round(item.spend * multiplier),
-    revenue: Math.round(item.revenue * multiplier),
-  }))
-
-  const scaledCostPerLead = costPerLead.map(item => ({
-    ...item,
-    costPerLeadHQ: Math.round(item.costPerLeadHQ * (0.8 + Math.random() * 0.4)),
-  }))
-
-  const scaledSpendVsReturn = spendVsReturn.map(item => ({
-    ...item,
-    spend: Math.round(item.spend * multiplier),
-    return: Math.round(item.return * multiplier),
-  }))
-
-  const totalSpend = scaledRoiByChannel.reduce((sum, c) => sum + c.spend, 0)
-  const totalRevenue = scaledRoiByChannel.reduce((sum, c) => sum + c.revenue, 0)
-  const overallROI = totalSpend > 0 ? Math.round(((totalRevenue - totalSpend) / totalSpend) * 100) : 0
-  const avgCostPerHQLead = Math.round(
-    scaledCostPerLead.reduce((sum, c) => sum + c.costPerLeadHQ, 0) / scaledCostPerLead.length
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-32 h-32 flex items-center justify-center">
+        <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            fill="none"
+            stroke={color}
+            strokeWidth="8"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.3s ease' }}
+          />
+        </svg>
+        <div className="absolute text-center">
+          <p className="text-2xl font-bold text-slate-900">{value}</p>
+          <p className="text-xs text-emerald-600 font-semibold">{delta}</p>
+        </div>
+      </div>
+      <p className="mt-4 text-sm font-medium text-slate-600 text-center">{label}</p>
+    </div>
   )
+}
 
-  // Facebook Ads Metrics
-  const facebookMetrics = {
-    impressions: '3.51M',
-    clicks: '13.65K',
-    uniqueClicks: '13.28K',
-    ctr: '0.39%',
-    cpm: '3.79',
-    cpc: '0.98',
-    avgDailyReach: '5.21K',
-  }
-
-  // Google Ads Metrics
-  const googleMetrics = {
-    conversionActions: 150,
-    spendAmount: 12.08,
-    costPerConversion: 80.54,
-    conversionRate: 2.45,
-  }
-
-  // Facebook Campaigns Data
-  const facebookCampaigns = [
-    { campaign: 'Campaign 3', spend: 2.64, impressions: 728.3, clicks: 1.75, uniqueClicks: 1.72, cpm: 3.63, cpc: 1.51, ctr: '0.24%' },
-    { campaign: 'Campaign 4', spend: 1.35, impressions: 83.29, clicks: 258, uniqueClicks: 250, cpm: 16.2, cpc: 5.23, ctr: '0.31%' },
-    { campaign: 'Campaign 9', spend: 1.34, impressions: 117.84, clicks: 241, uniqueClicks: 237, cpm: 11.4, cpc: 5.57, ctr: '0.20%' },
-    { campaign: 'Campaign 6', spend: 1.33, impressions: 314.69, clicks: 956, uniqueClicks: 914, cpm: 4.24, cpc: 1.4, ctr: '0.30%' },
+const ChannelPerformanceCard: React.FC = () => {
+  const channels = [
+    {
+      name: 'Facebook',
+      color: '#0ea5e9',
+      data: [3, 5, 4, 8, 6, 9, 7, 8],
+      metrics: { ctr: '2.4%', cpc: '$0.89', conversions: '324' },
+    },
+    {
+      name: 'Google',
+      color: '#10b981',
+      data: [5, 7, 6, 9, 8, 10, 9, 11],
+      metrics: { ctr: '3.1%', cpc: '$1.24', conversions: '512' },
+    },
+    {
+      name: 'LinkedIn',
+      color: '#6366f1',
+      data: [4, 6, 5, 7, 8, 9, 10, 11],
+      metrics: { ctr: '1.8%', cpc: '$2.15', conversions: '156' },
+    },
   ]
 
-  // Google Ads Campaigns Data
-  const googleCampaigns = [
-    { campaign: 'GA E-markets Campaign Tier 1', spend: 1.46, impressions: 1.35, clicks: 828, ctr: '61.42%', cpc: 1.76, convActions: 66, costPerConv: 22.06, convRate: '7.97%' },
-    { campaign: 'GA E-markets Campaign Tier 5', spend: 6.3, impressions: 14.93, clicks: 2.49, ctr: '16.68%', cpc: 2.53, convActions: 39, costPerConv: 161.44, convRate: '1.57%' },
-    { campaign: 'GA E-markets Campaign Tier 3', spend: 1.83, impressions: 5.3, clicks: 774, ctr: '14.60%', cpc: 2.37, convActions: 18, costPerConv: 101.72, convRate: '2.33%' },
-    { campaign: 'GA E-markets Campaign Tier 10', spend: 0.833, impressions: 2.1, clicks: 423, ctr: '20.13%', cpc: 1.97, convActions: 6, costPerConv: 138.83, convRate: '1.42%' },
+  const maxHeight = 12
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <h2 className="text-lg font-semibold text-slate-900 mb-6">Channel Performance</h2>
+
+      <div className="space-y-6">
+        {channels.map((channel) => (
+          <div key={channel.name}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-slate-900">{channel.name}</h3>
+              <div className="flex gap-4 text-xs">
+                <span className="text-slate-600">Best CTR: {channel.metrics.ctr}</span>
+                <span className="text-slate-600">Best CPC: {channel.metrics.cpc}</span>
+                <span className="text-slate-600">Conversions: {channel.metrics.conversions}</span>
+              </div>
+            </div>
+
+            <div className="flex items-end gap-1 h-16">
+              {channel.data.map((value, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-sm"
+                  style={{
+                    backgroundColor: channel.color,
+                    height: `${(value / maxHeight) * 100}%`,
+                  }}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-slate-500 mt-2">8 weeks trend</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const CampaignPerformance: React.FC = () => {
+  const campaigns = [
+    { name: 'Campaign 3', ctr: 8.5, spend: '$2.64k', impressions: '728k', clicks: '1.75k', cpm: '$3.63', cpc: '$1.51' },
+    { name: 'Campaign 4', ctr: 6.2, spend: '$1.35k', impressions: '83k', clicks: '258', cpm: '$16.20', cpc: '$5.23' },
+    { name: 'Campaign 9', ctr: 5.8, spend: '$1.34k', impressions: '118k', clicks: '241', cpm: '$11.40', cpc: '$5.57' },
+    { name: 'Campaign 6', ctr: 9.1, spend: '$1.33k', impressions: '315k', clicks: '956', cpm: '$4.24', cpc: '$1.40' },
   ]
 
-  const getQuadrantColor = (x: number, y: number) => {
-    if (y >= 8 && x <= 100) return '#10b981'
-    if (y >= 8 && x > 100) return '#f59e0b'
-    if (y < 8 && x <= 100) return '#6366f1'
-    return '#ef4444'
-  }
+  return (
+    <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <h2 className="text-lg font-semibold text-slate-900 mb-6">Campaign Performance</h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* CTR Score Bars */}
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">CTR Scores</h3>
+          <div className="space-y-4">
+            {campaigns.map((campaign) => (
+              <div key={campaign.name}>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm font-medium text-slate-900">{campaign.name}</span>
+                  <span className="text-sm font-semibold text-slate-900">{campaign.ctr.toFixed(1)}%</span>
+                </div>
+                <div className="w-full bg-slate-200 rounded-full h-2">
+                  <div
+                    className="bg-emerald-500 h-2 rounded-full"
+                    style={{ width: `${Math.min(campaign.ctr * 10, 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Campaign Table */}
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Detailed Metrics</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="border-b border-slate-200">
+                <tr>
+                  <th className="text-left py-2 font-semibold text-slate-900">Campaign</th>
+                  <th className="text-right py-2 font-semibold text-slate-900">Spend</th>
+                  <th className="text-right py-2 font-semibold text-slate-900">Impr.</th>
+                  <th className="text-right py-2 font-semibold text-slate-900">Clicks</th>
+                  <th className="text-right py-2 font-semibold text-slate-900">CPM</th>
+                  <th className="text-right py-2 font-semibold text-slate-900">CPC</th>
+                </tr>
+              </thead>
+              <tbody>
+                {campaigns.map((campaign) => (
+                  <tr key={campaign.name} className="border-b border-slate-100 hover:bg-slate-50">
+                    <td className="text-left py-2 text-slate-900 font-medium">{campaign.name}</td>
+                    <td className="text-right py-2 text-slate-700">{campaign.spend}</td>
+                    <td className="text-right py-2 text-slate-700">{campaign.impressions}</td>
+                    <td className="text-right py-2 text-slate-700">{campaign.clicks}</td>
+                    <td className="text-right py-2 text-slate-700">{campaign.cpm}</td>
+                    <td className="text-right py-2 text-slate-700">{campaign.cpc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ===== MAIN COMPONENT =====
+
+export function MarketingROI() {
+  const [selectedPeriod, setSelectedPeriod] = useState('Last 30 Days')
 
   return (
     <section className="space-y-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Marketing ROI</h1>
-        <p className="text-slate-600 mt-1">Facebook Ads • Google Ads • Channel Performance</p>
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Marketing ROI Dashboard</h1>
+            <p className="text-slate-600 mt-2">Track spend, performance, and ROI across all marketing channels</p>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100">
+            <PieChart size={18} className="text-slate-600" />
+            <span className="text-sm font-medium text-slate-700">{selectedPeriod}</span>
+          </div>
+        </div>
 
         {/* Period Filter */}
-        <div className="mt-4 flex items-center gap-3">
-          <span className="text-sm font-medium text-slate-700">Period:</span>
-          <div className="flex gap-2 flex-wrap">
-            {PERIOD_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setSelectedPeriod(option.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedPeriod === option.value
-                    ? 'bg-primary text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <PeriodFilter selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
       </div>
 
-      {/* ===== FACEBOOK ADS SECTION ===== */}
-      <div className="border-t-2 border-slate-300 pt-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Facebook Ads Dashboard</h2>
-
-        {/* Facebook KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Impressions</p>
-            <p className="text-3xl font-bold">{facebookMetrics.impressions}</p>
-          </div>
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Clicks</p>
-            <p className="text-3xl font-bold">{facebookMetrics.clicks}</p>
-          </div>
-          <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">CTR</p>
-            <p className="text-3xl font-bold">{facebookMetrics.ctr}</p>
-          </div>
-          <div className="bg-gradient-to-br from-blue-700 to-blue-800 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">CPM</p>
-            <p className="text-3xl font-bold">${facebookMetrics.cpm}</p>
-          </div>
-        </div>
-
-        {/* Facebook Campaigns Table */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden mb-8">
-          <div className="p-6 border-b border-slate-200">
-            <h3 className="text-lg font-semibold text-slate-900">Facebook Campaigns Performance</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Campaign</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Spend (K)</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Impressions (K)</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Clicks</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">CPM</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">CPC</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">CTR</th>
-                </tr>
-              </thead>
-              <tbody>
-                {facebookCampaigns.map((camp, idx) => (
-                  <tr key={idx} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="px-6 py-4 font-medium text-slate-900">{camp.campaign}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">${camp.spend.toFixed(2)}k</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.impressions.toFixed(2)}k</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.clicks.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">${camp.cpm.toFixed(2)}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">${camp.cpc.toFixed(2)}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.ctr}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* KPI Circles */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KpiCircle label="Impressions" value="3.51M" delta="+12%" progress={72} color="#0ea5e9" />
+        <KpiCircle label="Clicks" value="13.65K" delta="+8%" progress={68} color="#10b981" />
+        <KpiCircle label="CTR" value="0.39%" delta="+0.07 pts" progress={39} color="#6366f1" />
+        <KpiCircle label="CPM" value="$3.79" delta="-6%" progress={55} color="#f59e0b" />
       </div>
 
-      {/* ===== GOOGLE ADS SECTION ===== */}
-      <div className="border-t-2 border-slate-300 pt-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Google Ads Dashboard</h2>
+      {/* Channel Performance */}
+      <ChannelPerformanceCard />
 
-        {/* Google KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Conversion Actions</p>
-            <p className="text-3xl font-bold">{googleMetrics.conversionActions}</p>
-          </div>
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Spend Amount</p>
-            <p className="text-3xl font-bold">${googleMetrics.spendAmount.toFixed(1)}k</p>
-          </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Cost/Conversion</p>
-            <p className="text-3xl font-bold">${googleMetrics.costPerConversion.toFixed(2)}</p>
-          </div>
-          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg p-6 text-center text-white">
-            <p className="text-sm font-semibold opacity-90 mb-2">Conversion Rate</p>
-            <p className="text-3xl font-bold">{googleMetrics.conversionRate.toFixed(2)}%</p>
-          </div>
-        </div>
+      {/* Campaign Performance */}
+      <CampaignPerformance />
 
-        {/* Google Campaigns Table */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden mb-8">
-          <div className="p-6 border-b border-slate-200">
-            <h3 className="text-lg font-semibold text-slate-900">Google Ads Campaigns Performance</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Campaign</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Spend (K)</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Impressions (K)</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Clicks</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">CTR</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Conv. Actions</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Cost/Conv.</th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-900">Conv. Rate</th>
-                </tr>
-              </thead>
-              <tbody>
-                {googleCampaigns.map((camp, idx) => (
-                  <tr key={idx} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="px-6 py-4 font-medium text-slate-900">{camp.campaign}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">${camp.spend.toFixed(2)}k</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.impressions.toFixed(2)}k</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.clicks.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.ctr}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.convActions}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">${camp.costPerConv.toFixed(2)}</td>
-                    <td className="px-6 py-4 text-center text-slate-700">{camp.convRate}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* ===== CHANNEL ANALYSIS SECTION ===== */}
-      <div className="border-t-2 border-slate-300 pt-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Channel Performance Analysis</h2>
-
-        {/* Channel KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-            <p className="text-sm text-slate-600 mb-2">Overall ROI</p>
-            <p className={`text-4xl font-bold ${overallROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {overallROI}%
-            </p>
-            <p className="text-xs text-slate-600 mt-2">{overallROI >= 0 ? '↑ Profitable' : '↓ Loss'}</p>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-            <p className="text-sm text-slate-600 mb-2">Cost per HQ Lead</p>
-            <p className="text-4xl font-bold text-slate-900">${avgCostPerHQLead}</p>
-            <p className="text-xs text-slate-600 mt-2">Efficiency metric</p>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-            <p className="text-sm text-slate-600 mb-2">Total Spend</p>
-            <p className="text-4xl font-bold text-slate-900">${(totalSpend / 1000).toFixed(1)}k</p>
-            <p className="text-xs text-slate-600 mt-2">Across all channels</p>
-          </div>
-        </div>
-
-        {/* ROI by Channel */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">ROI by Channel</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={scaledRoiByChannel}
-              layout="vertical"
-              margin={{ top: 5, right: 30, left: 150, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis type="number" stroke="#64748b" />
-              <YAxis type="category" dataKey="channel" stroke="#64748b" width={140} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                }}
-                formatter={(value: any) => `${value}%`}
-              />
-              <Bar dataKey="roi" radius={[0, 8, 8, 0]}>
-                {roiByChannel.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.roi >= 0 ? '#10b981' : '#ef4444'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Cost per Quality Lead */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Cost per Quality Lead by Channel</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={scaledCostPerLead}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="channel" stroke="#64748b" angle={-45} textAnchor="end" height={80} />
-              <YAxis stroke="#64748b" label={{ value: 'Cost ($)', angle: -90, position: 'insideLeft' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                }}
-                formatter={(value: any) => `$${value}`}
-              />
-              <Bar dataKey="costPerLeadHQ" fill="#0d9488" radius={[8, 8, 0, 0]} name="Cost per HQ Lead" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Spend vs Return */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Spend vs Return</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <ComposedChart data={scaledSpendVsReturn}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="channel" stroke="#64748b" angle={-45} textAnchor="end" height={80} />
-              <YAxis yAxisId="left" stroke="#64748b" label={{ value: 'Spend ($)', angle: -90, position: 'insideLeft' }} />
-              <YAxis yAxisId="right" orientation="right" stroke="#64748b" label={{ value: 'Revenue ($)', angle: 90, position: 'insideRight' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                }}
-              />
-              <Legend />
-              <Bar yAxisId="left" dataKey="spend" fill="#ef4444" radius={[8, 8, 0, 0]} name="Spend" />
-              <Line yAxisId="right" type="monotone" dataKey="return" stroke="#10b981" strokeWidth={3} name="Revenue" />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Campaign Winners vs Losers */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Campaign Winners vs Losers</h3>
-          <div className="mb-4 text-xs text-slate-600 space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full" /> Top-Right (High Conversion, Low Cost) = WINNERS
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-amber-500 rounded-full" /> Top-Left (High Conversion, High Cost) = WATCH CLOSELY
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-indigo-500 rounded-full" /> Bottom-Right (Low Conversion, Low Cost) = NURTURE
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full" /> Bottom-Left (Low Conversion, High Cost) = LOSERS
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height={300}>
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis
-                dataKey="x"
-                type="number"
-                stroke="#64748b"
-                label={{ value: 'Cost per HQ Lead ($)', position: 'insideBottomRight', offset: -10 }}
-              />
-              <YAxis
-                dataKey="y"
-                type="number"
-                stroke="#64748b"
-                label={{ value: 'Conversion Rate (%)', angle: -90, position: 'insideLeft' }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                }}
-                cursor={{ strokeDasharray: '3 3' }}
-              />
-              <Scatter data={quadrantData} fill="#8884d8">
-                {quadrantData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getQuadrantColor(entry.x, entry.y)} />
-                ))}
-              </Scatter>
-            </ScatterChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Trends Over Time */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Trends Over Time</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="month" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                }}
-              />
-              <Legend />
-              <Line type="monotone" dataKey="spend" stroke="#ef4444" strokeWidth={2} name="Spend" />
-              <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} name="Revenue" />
-              <Line type="monotone" dataKey="highQualityLeads" stroke="#0d9488" strokeWidth={2} name="HQ Leads" />
-              <Line type="monotone" dataKey="roi" stroke="#6366f1" strokeWidth={2} name="ROI %" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+      {/* Footer */}
+      <div className="border-t border-slate-200 pt-6 flex items-center justify-between">
+        <p className="text-xs text-slate-500">Model updated: {new Date().toLocaleDateString()}</p>
+        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-colors">
+          Export Report
+          <ArrowRight size={16} />
+        </button>
       </div>
     </section>
   )
