@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Lead } from '@/app/types/lead'
 import {
   BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis,
@@ -10,27 +11,46 @@ interface CustomerLifetimeValueProps {
   leads: Lead[]
 }
 
-export function CustomerLifetimeValue({ leads }: CustomerLifetimeValueProps) {
+const PERIOD_OPTIONS = [
+  { value: 'last-7', label: 'Last 7 Days' },
+  { value: 'last-30', label: 'Last 30 Days' },
+  { value: 'last-90', label: 'Last 90 Days' },
+  { value: 'year-to-date', label: 'Year to Date' },
+  { value: 'all-time', label: 'All Time' },
+]
+
+const PERIOD_MULTIPLIERS: Record<string, number> = {
+  'last-7': 0.12,
+  'last-30': 1,
+  'last-90': 3.2,
+  'year-to-date': 8.5,
+  'all-time': 12,
+}
+
+export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
+  const [selectedPeriod, setSelectedPeriod] = useState('last-30')
+  const multiplier = PERIOD_MULTIPLIERS[selectedPeriod]
+
   // CLV by Education data
   const educationData = [
-    { name: 'Bachelor', value: 2085, fill: '#3b82f6' },
-    { name: 'College', value: 778, fill: '#f59e0b' },
-    { name: 'High School', value: 147, fill: '#ef4444' },
-    { name: 'Doctor', value: 140, fill: '#10b981' },
+    { name: 'Bachelor', value: Math.round(2085 * multiplier), fill: '#3b82f6' },
+    { name: 'College', value: Math.round(778 * multiplier), fill: '#f59e0b' },
+    { name: 'High School', value: Math.round(147 * multiplier), fill: '#ef4444' },
+    { name: 'Doctor', value: Math.round(140 * multiplier), fill: '#10b981' },
   ]
 
   // CLV by Loyalty Card data
   const loyaltyCardData = [
-    { name: 'Star', value: 1240, fill: '#3b82f6' },
-    { name: 'Nova', value: 1108, fill: '#f59e0b' },
-    { name: 'Aurora', value: 894, fill: '#ef4444' },
+    { name: 'Star', value: Math.round(1240 * multiplier), fill: '#3b82f6' },
+    { name: 'Nova', value: Math.round(1108 * multiplier), fill: '#f59e0b' },
+    { name: 'Aurora', value: Math.round(894 * multiplier), fill: '#ef4444' },
   ]
 
   // CLV by Marital Status data
   const maritalStatusData = [
-    { name: 'Married', value: 1901, fill: '#3b82f6' },
-    { name: 'Single', value: 838, fill: '#f59e0b' },
-    { name: 'Divorced', value: 503, fill: '#ef4444' },
+    { name: 'Married', value: Math.round(1901 * multiplier), fill: '#3b82f6' },
+    { name: 'Single', value: Math.round(838 * multiplier), fill: '#f59e0b' },
+    { name: 'Divorced', value: Math.round(503 * multiplier), fill: '#ef4444' },
   ]
 
   // Flights Booked by Month and Year (Line chart)
@@ -133,6 +153,26 @@ export function CustomerLifetimeValue({ leads }: CustomerLifetimeValueProps) {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900">Customer Lifetime Value</h1>
         <p className="text-slate-600 mt-1">Comprehensive CLV analysis by demographics, loyalty, and geography.</p>
+
+        {/* Period Filter */}
+        <div className="mt-4 flex items-center gap-3">
+          <span className="text-sm font-medium text-slate-700">Period:</span>
+          <div className="flex gap-2 flex-wrap">
+            {PERIOD_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setSelectedPeriod(option.value)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  selectedPeriod === option.value
+                    ? 'bg-primary text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* TOP 3 DONUT CHARTS ROW */}

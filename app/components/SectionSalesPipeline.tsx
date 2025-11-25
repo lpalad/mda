@@ -1,11 +1,29 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Users, DollarSign, Package2, Activity } from 'lucide-react'
+
+// ===== PERIOD CONFIGURATION =====
+
+const PERIOD_OPTIONS = [
+  { value: 'last-7', label: 'Last 7 Days' },
+  { value: 'last-30', label: 'Last 30 Days' },
+  { value: 'last-90', label: 'Last 90 Days' },
+  { value: 'year-to-date', label: 'Year to Date' },
+  { value: 'all-time', label: 'All Time' },
+]
+
+const PERIOD_MULTIPLIERS: Record<string, number> = {
+  'last-7': 0.12,
+  'last-30': 1,
+  'last-90': 3.2,
+  'year-to-date': 8.5,
+  'all-time': 12,
+}
 
 // ===== DATA =====
 
-const customers = [
+const baseCustomers = [
   { name: 'Visionary Enterprises', revenue: 21000 },
   { name: 'Swift Enterprises', revenue: 19047 },
   { name: 'United Solutions', revenue: 18121 },
@@ -14,10 +32,10 @@ const customers = [
   { name: 'Alpha Corporation', revenue: 12440 },
 ]
 
-const totalRevenue = customers.reduce((sum, c) => sum + c.revenue, 0)
-const numCustomers = customers.length
-const avgRevenue = totalRevenue / numCustomers
-const numProductsSold = 122
+const baseMetrics = {
+  numCustomers: 6,
+  numProductsSold: 122,
+}
 
 // ===== HELPER COMPONENTS =====
 
@@ -69,7 +87,11 @@ const HalfMetricCard: React.FC<HalfMetricCardProps> = ({
   )
 }
 
-const CustomerRevenueBars: React.FC = () => {
+interface CustomerRevenueBarProps {
+  customers: Array<{ name: string; revenue: number }>
+}
+
+const CustomerRevenueBars: React.FC<CustomerRevenueBarProps> = ({ customers }) => {
   const maxRevenue = Math.max(...customers.map((c) => c.revenue))
   return (
     <div className="mt-4 space-y-3">
@@ -96,13 +118,51 @@ const CustomerRevenueBars: React.FC = () => {
 // ===== MAIN COMPONENT =====
 
 export function SalesPipeline() {
+  const [selectedPeriod, setSelectedPeriod] = useState('last-30')
+  const multiplier = PERIOD_MULTIPLIERS[selectedPeriod]
+
+  // Calculate scaled data
+  const customers = baseCustomers.map((c) => ({
+    name: c.name,
+    revenue: Math.round(c.revenue * multiplier),
+  }))
+
+  const totalRevenue = customers.reduce((sum, c) => sum + c.revenue, 0)
+  const numCustomers = baseMetrics.numCustomers
+  const avgRevenue = totalRevenue / numCustomers
+  const numProductsSold = Math.round(baseMetrics.numProductsSold * multiplier)
+
   return (
     <div className="min-h-screen w-full bg-slate-50 px-4 py-8 text-slate-900 sm:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
         {/* Header Card */}
         <div className="rounded-3xl bg-white/90 p-6 shadow-sm ring-1 ring-slate-200">
-          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Sales Pipeline</h1>
-          <p className="mt-1 text-sm text-slate-500">Revenue breakdown by customers and products.</p>
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Sales Pipeline</h1>
+              <p className="mt-1 text-sm text-slate-500">Revenue breakdown by customers and products.</p>
+            </div>
+          </div>
+
+          {/* Period Filter */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-slate-700">Period:</span>
+            <div className="flex gap-2 flex-wrap">
+              {PERIOD_OPTIONS.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSelectedPeriod(option.value)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedPeriod === option.value
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* KPI Cards Grid */}
@@ -153,7 +213,7 @@ export function SalesPipeline() {
               <p className="mt-1 text-[11px] text-slate-500">
                 Longer bar = higher revenue. Quickly see your top customers.
               </p>
-              <CustomerRevenueBars />
+              <CustomerRevenueBars customers={customers} />
             </div>
 
             {/* Right: Table */}
