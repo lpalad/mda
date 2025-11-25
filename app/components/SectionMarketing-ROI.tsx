@@ -88,33 +88,39 @@ const ChannelPerformanceCard: React.FC<ChannelPerformanceCardProps> = ({ multipl
     {
       name: 'Facebook',
       color: '#0ea5e9',
-      data: [3, 5, 4, 8, 6, 9, 7, 8],
+      baseData: [3, 5, 4, 8, 6, 9, 7, 8],
       baseMetrics: { ctr: 2.4, cpc: 0.89, conversions: 324 },
     },
     {
       name: 'Google',
       color: '#10b981',
-      data: [5, 7, 6, 9, 8, 10, 9, 11],
+      baseData: [5, 7, 6, 9, 8, 10, 9, 11],
       baseMetrics: { ctr: 3.1, cpc: 1.24, conversions: 512 },
     },
     {
       name: 'LinkedIn',
       color: '#6366f1',
-      data: [4, 6, 5, 7, 8, 9, 10, 11],
+      baseData: [4, 6, 5, 7, 8, 9, 10, 11],
       baseMetrics: { ctr: 1.8, cpc: 2.15, conversions: 156 },
     },
   ]
 
-  const channels = baseChannels.map((channel) => ({
-    ...channel,
-    metrics: {
-      ctr: (channel.baseMetrics.ctr * (0.9 + Math.random() * 0.2)).toFixed(1),
-      cpc: (channel.baseMetrics.cpc * (0.85 + Math.random() * 0.3)).toFixed(2),
-      conversions: Math.round(channel.baseMetrics.conversions * multiplier),
-    },
-  }))
+  const channels = baseChannels.map((channel) => {
+    // Scale the bar data based on multiplier
+    const scaledData = channel.baseData.map((val) => Math.round(val * Math.sqrt(multiplier)))
+    const maxScaledHeight = Math.max(...scaledData)
 
-  const maxHeight = 12
+    return {
+      ...channel,
+      data: scaledData,
+      maxHeight: maxScaledHeight,
+      metrics: {
+        ctr: (channel.baseMetrics.ctr * (0.9 + Math.random() * 0.2)).toFixed(1),
+        cpc: (channel.baseMetrics.cpc * (0.85 + Math.random() * 0.3)).toFixed(2),
+        conversions: Math.round(channel.baseMetrics.conversions * multiplier),
+      },
+    }
+  })
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-6">
@@ -139,7 +145,7 @@ const ChannelPerformanceCard: React.FC<ChannelPerformanceCardProps> = ({ multipl
                   className="flex-1 rounded-sm"
                   style={{
                     backgroundColor: channel.color,
-                    height: `${(value / maxHeight) * 100}%`,
+                    height: `${(value / channel.maxHeight) * 100}%`,
                   }}
                 />
               ))}
