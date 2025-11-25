@@ -235,16 +235,6 @@ export function getHighQualityProfile(leads: Lead[]) {
   }
 }
 
-export function getFeatureImportance() {
-  return [
-    { feature: 'Firm Size', importance: 0.28 },
-    { feature: 'Referral Source', importance: 0.25 },
-    { feature: 'Engagement Score', importance: 0.18 },
-    { feature: 'Industry Vertical', importance: 0.12 },
-    { feature: 'Lead Source Channel', importance: 0.10 },
-    { feature: 'Communication Preference', importance: 0.07 },
-  ]
-}
 
 // Marketing ROI Data
 const channelSpendProfiles: Record<LeadSource, { monthlySpend: number }> = {
@@ -408,4 +398,171 @@ export function getTrendData(leads: Lead[]) {
       roi: monthlySpend > 0 ? Math.round(((revenue - monthlySpend) / monthlySpend) * 100) : 0,
     }
   })
+}
+
+// ===== LEAD QUALITY ANALYTICS — 7 CHART DATA FUNCTIONS =====
+
+export function getQualityScoreDistribution(leads: Lead[]) {
+  const bins = [
+    { range: '0-10', count: 0 },
+    { range: '11-20', count: 0 },
+    { range: '21-30', count: 0 },
+    { range: '31-40', count: 0 },
+    { range: '41-50', count: 0 },
+    { range: '51-60', count: 0 },
+    { range: '61-70', count: 0 },
+    { range: '71-80', count: 0 },
+    { range: '81-90', count: 0 },
+    { range: '91-100', count: 0 },
+  ]
+
+  leads.forEach(lead => {
+    const score = Math.floor(lead.qualityScore / 10)
+    if (score >= 0 && score < 10) {
+      bins[score].count++
+    }
+  })
+
+  return bins
+}
+
+export function getLeadSegmentation(leads: Lead[]) {
+  const high = leads.filter(l => l.qualityTier === 'High').length
+  const medium = leads.filter(l => l.qualityTier === 'Medium').length
+  const low = leads.filter(l => l.qualityTier === 'Low').length
+  const total = leads.length
+
+  return {
+    high: { count: high, percentage: total > 0 ? ((high / total) * 100).toFixed(1) : '0' },
+    medium: { count: medium, percentage: total > 0 ? ((medium / total) * 100).toFixed(1) : '0' },
+    low: { count: low, percentage: total > 0 ? ((low / total) * 100).toFixed(1) : '0' },
+    total,
+  }
+}
+
+export function getSourceVsQuality(leads: Lead[]) {
+  const channelMap = new Map<LeadSource, { high: number; medium: number; low: number }>()
+
+  SOURCES.forEach(source => {
+    channelMap.set(source, { high: 0, medium: 0, low: 0 })
+  })
+
+  leads.forEach(lead => {
+    const channel = channelMap.get(lead.source)
+    if (channel) {
+      if (lead.qualityTier === 'High') channel.high++
+      else if (lead.qualityTier === 'Medium') channel.medium++
+      else channel.low++
+    }
+  })
+
+  return Array.from(channelMap.entries()).map(([channel, counts]) => ({
+    channel,
+    High: counts.high,
+    Medium: counts.medium,
+    Low: counts.low,
+    total: counts.high + counts.medium + counts.low,
+  }))
+}
+
+export function getFeatureImportance() {
+  return [
+    { feature: 'Firm Size', importance: 28 },
+    { feature: 'Engagement Level', importance: 24 },
+    { feature: 'Lead Source', importance: 20 },
+    { feature: 'Industry', importance: 16 },
+    { feature: 'Communication Preference', importance: 12 },
+  ]
+}
+
+export function getFunnelByQuality(leads: Lead[]) {
+  const stages = ['Awareness', 'Interest', 'Booking', 'Consultation', 'Conversion']
+
+  return stages.map(stage => {
+    const stageLeads = leads.filter(l => l.stage === stage as LeadStage)
+    const high = stageLeads.filter(l => l.qualityTier === 'High').length
+    const medium = stageLeads.filter(l => l.qualityTier === 'Medium').length
+    const low = stageLeads.filter(l => l.qualityTier === 'Low').length
+
+    return {
+      stage,
+      High: high,
+      Medium: medium,
+      Low: low,
+      total: high + medium + low,
+    }
+  })
+}
+
+export function getQualityHeatmap(leads: Lead[]) {
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`)
+
+  const heatmapData: Array<{ day: string; hour: string; score: number }> = []
+
+  days.forEach((day, dayIdx) => {
+    hours.forEach((hour, hourIdx) => {
+      const dayOfWeek = (dayIdx + 1) % 7
+      const hourNum = hourIdx
+
+      // Simulate: High quality during business hours, weekdays
+      let baseScore = 40
+      if (dayIdx < 5) baseScore += 15 // Weekdays
+      if (hourNum >= 9 && hourNum <= 17) baseScore += 20 // Business hours
+      if (hourNum >= 13 && hourNum <= 15) baseScore += 10 // Lunch meeting spike
+
+      const relevantLeads = leads.filter(l => {
+        const leadDate = new Date(l.dateCreated)
+        return leadDate.getDay() === dayOfWeek && leadDate.getHours() === hourNum
+      })
+
+      const avgScore = relevantLeads.length > 0
+        ? relevantLeads.reduce((sum, l) => sum + l.qualityScore, 0) / relevantLeads.length
+        : baseScore
+
+      heatmapData.push({
+        day,
+        hour,
+        score: Math.round(avgScore),
+      })
+    })
+  })
+
+  return heatmapData
+}
+
+export function getQualityTrendLine(leads: Lead[]) {
+  const weeks = new Map<string, { high: number; medium: number; low: number }>()
+  const today = new Date()
+
+  // Create 12-week trend
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i * 7)
+    const weekKey = `Week ${12 - i}`
+    weeks.set(weekKey, { high: 0, medium: 0, low: 0 })
+  }
+
+  leads.forEach(lead => {
+    const leadDate = new Date(lead.dateCreated)
+    const daysDiff = Math.floor((today.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24))
+    const weekNum = Math.floor(daysDiff / 7)
+
+    if (weekNum >= 0 && weekNum < 12) {
+      const weekKey = `Week ${12 - weekNum}`
+      const weekData = weeks.get(weekKey)
+      if (weekData) {
+        if (lead.qualityTier === 'High') weekData.high++
+        else if (lead.qualityTier === 'Medium') weekData.medium++
+        else weekData.low++
+      }
+    }
+  })
+
+  return Array.from(weeks.entries()).map(([week, counts]) => ({
+    week,
+    High: counts.high,
+    Medium: counts.medium,
+    Low: counts.low,
+  }))
 }

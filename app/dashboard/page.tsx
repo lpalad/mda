@@ -43,7 +43,7 @@ export default function DashboardPage() {
       <Header />
 
       <Suspense fallback={<div>Loading...</div>}>
-        <DashboardContent allLeads={allLeads} filteredLeads={filteredLeads} />
+        <DashboardContent filteredLeads={filteredLeads} />
       </Suspense>
     </div>
   )

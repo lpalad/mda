@@ -2,12 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { SectionA } from '@/app/components/SectionA-LeadQualitySummary'
-import { SectionB } from '@/app/components/SectionB-PredictiveModel'
-import { SectionC } from '@/app/components/SectionC-LeadSourceBreakdown'
-import { SectionD } from '@/app/components/SectionD-LeadJourney'
-import { SectionE } from '@/app/components/SectionE-LeadProfile'
-import { SectionF } from '@/app/components/SectionF-Recommendations'
+import { LeadQualityAnalytics } from '@/app/components/LeadQualityAnalytics'
 import { MarketingROI } from '@/app/components/SectionMarketing-ROI'
 import { Lead } from '@/app/types/lead'
 import { BarChart3, TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
@@ -22,11 +17,10 @@ const sidebarSections = [
 ]
 
 interface DashboardContentProps {
-  allLeads: Lead[]
   filteredLeads: Lead[]
 }
 
-export function DashboardContent({ allLeads, filteredLeads }: DashboardContentProps) {
+export function DashboardContent({ filteredLeads }: DashboardContentProps) {
   const searchParams = useSearchParams()
   const currentSection = searchParams.get('section') || 'lead-quality'
 
@@ -70,40 +64,9 @@ export function DashboardContent({ allLeads, filteredLeads }: DashboardContentPr
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          {/* Only show Lead Quality Analytics for now */}
+          {/* Lead Quality Analytics */}
           {currentSection === 'lead-quality' && (
-            <>
-              <section className="mb-12 bg-white border border-slate-200 rounded-lg p-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-3">Lead Quality Analytics</h1>
-                <p className="text-lg text-slate-600 mb-4">
-                  <span className="font-semibold">The Challenge:</span> A growing law firm had no visibility into which
-                  marketing channels were driving quality leads, how leads moved through their sales funnel, or where to
-                  optimize budgets. The result: wasted marketing spend on low-converting channels and missed opportunities
-                  from high-value prospects.
-                </p>
-                <p className="text-lg text-slate-600 mb-4">
-                  <span className="font-semibold">The Solution:</span> Implementing lead quality scoring and predictive
-                  analytics to identify high-value prospects, channel performance, and key conversion drivers.
-                </p>
-                <p className="text-lg text-slate-600">
-                  <span className="font-semibold">The Outcome:</span> By reallocating budget to top-performing channels and
-                  implementing targeted outreach strategies, the firm increased qualified pipeline by 35% while reducing
-                  customer acquisition costs by 18%.
-                </p>
-                <div className="mt-6 text-sm text-slate-600">
-                  <p>
-                    <span className="font-semibold">Viewing Period:</span> {allLeads.length} total leads analyzed | {filteredLeads.length} leads in selected period
-                  </p>
-                </div>
-              </section>
-
-              <SectionA leads={filteredLeads} />
-              <SectionB leads={filteredLeads} />
-              <SectionC leads={filteredLeads} />
-              <SectionD leads={filteredLeads} />
-              <SectionE leads={filteredLeads} />
-              <SectionF leads={filteredLeads} />
-            </>
+            <LeadQualityAnalytics leads={filteredLeads} />
           )}
 
           {/* Marketing ROI Section */}
