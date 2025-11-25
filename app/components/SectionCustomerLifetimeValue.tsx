@@ -226,7 +226,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         </div>
 
         {/* Total CLV by Marital Status */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Marital Status</h2>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -253,7 +253,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       {/* TWO LINE CHARTS ROW */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Total Flights Booked by Month and Year */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Flights Booked by Month and Year</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={flightsBookedData}>
@@ -276,7 +276,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         </div>
 
         {/* Total CLV by Month and Year */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Month and Year</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={clvByMonthData}>
@@ -302,7 +302,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       {/* TWO HORIZONTAL BAR CHARTS ROW */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Total Flights by Province */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Flights by Province</h2>
           <ResponsiveContainer width="100%" height={350}>
             <BarChart
@@ -327,7 +327,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         </div>
 
         {/* Total Dollar Points Redeemed by Province */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Dollar Points Redeemed by Province</h2>
           <ResponsiveContainer width="100%" height={350}>
             <BarChart
@@ -353,7 +353,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       </div>
 
       {/* AREA CHART */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Total Flights Booked Changes by Loyalty Card</h2>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={flightsChangesData}>
@@ -377,7 +377,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6 overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 overflow-hidden animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV for Cities by Gender</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
