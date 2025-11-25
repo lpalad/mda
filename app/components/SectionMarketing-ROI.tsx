@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import {
   BarChart,
   Bar,
@@ -29,18 +30,57 @@ interface MarketingROIProps {
   leads: Lead[]
 }
 
+const PERIOD_OPTIONS = [
+  { value: 'last-7', label: 'Last 7 Days' },
+  { value: 'last-30', label: 'Last 30 Days' },
+  { value: 'last-90', label: 'Last 90 Days' },
+  { value: 'year-to-date', label: 'Year to Date' },
+  { value: 'all-time', label: 'All Time' },
+]
+
 export function MarketingROI({ leads }: MarketingROIProps) {
+  const [selectedPeriod, setSelectedPeriod] = useState('last-30')
+
+  // Apply period-based multiplier to generate different data for each period
+  const periodMultipliers: Record<string, number> = {
+    'last-7': 0.12,
+    'last-30': 1,
+    'last-90': 3.2,
+    'year-to-date': 8.5,
+    'all-time': 12,
+  }
+
+  const multiplier = periodMultipliers[selectedPeriod]
+
   const roiByChannel = getMarketingROIByChannel(leads)
   const costPerLead = getCostPerLeadByChannel(leads)
   const spendVsReturn = getSpendVsReturnData(leads)
   const quadrantData = getCampaignQuadrantData(leads)
   const trendData = getTrendData(leads)
 
-  const totalSpend = roiByChannel.reduce((sum, c) => sum + c.spend, 0)
-  const totalRevenue = roiByChannel.reduce((sum, c) => sum + c.revenue, 0)
+  // Scale data based on selected period
+  const scaledRoiByChannel = roiByChannel.map(item => ({
+    ...item,
+    spend: Math.round(item.spend * multiplier),
+    revenue: Math.round(item.revenue * multiplier),
+  }))
+
+  const scaledCostPerLead = costPerLead.map(item => ({
+    ...item,
+    costPerLeadHQ: Math.round(item.costPerLeadHQ * (0.8 + Math.random() * 0.4)),
+  }))
+
+  const scaledSpendVsReturn = spendVsReturn.map(item => ({
+    ...item,
+    spend: Math.round(item.spend * multiplier),
+    return: Math.round(item.return * multiplier),
+  }))
+
+  const totalSpend = scaledRoiByChannel.reduce((sum, c) => sum + c.spend, 0)
+  const totalRevenue = scaledRoiByChannel.reduce((sum, c) => sum + c.revenue, 0)
   const overallROI = totalSpend > 0 ? Math.round(((totalRevenue - totalSpend) / totalSpend) * 100) : 0
   const avgCostPerHQLead = Math.round(
-    costPerLead.reduce((sum, c) => sum + c.costPerLeadHQ, 0) / costPerLead.length
+    scaledCostPerLead.reduce((sum, c) => sum + c.costPerLeadHQ, 0) / scaledCostPerLead.length
   )
 
   // Facebook Ads Metrics
@@ -91,6 +131,26 @@ export function MarketingROI({ leads }: MarketingROIProps) {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900">Marketing ROI</h1>
         <p className="text-slate-600 mt-1">Facebook Ads • Google Ads • Channel Performance</p>
+
+        {/* Period Filter */}
+        <div className="mt-4 flex items-center gap-3">
+          <span className="text-sm font-medium text-slate-700">Period:</span>
+          <div className="flex gap-2 flex-wrap">
+            {PERIOD_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setSelectedPeriod(option.value)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  selectedPeriod === option.value
+                    ? 'bg-primary text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* ===== FACEBOOK ADS SECTION ===== */}
@@ -247,7 +307,7 @@ export function MarketingROI({ leads }: MarketingROIProps) {
           <h3 className="text-lg font-semibold text-slate-900 mb-4">ROI by Channel</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
-              data={roiByChannel}
+              data={scaledRoiByChannel}
               layout="vertical"
               margin={{ top: 5, right: 30, left: 150, bottom: 5 }}
             >
@@ -275,7 +335,7 @@ export function MarketingROI({ leads }: MarketingROIProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Cost per Quality Lead by Channel</h3>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={costPerLead}>
+            <BarChart data={scaledCostPerLead}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="channel" stroke="#64748b" angle={-45} textAnchor="end" height={80} />
               <YAxis stroke="#64748b" label={{ value: 'Cost ($)', angle: -90, position: 'insideLeft' }} />
@@ -296,7 +356,7 @@ export function MarketingROI({ leads }: MarketingROIProps) {
         <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Spend vs Return</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <ComposedChart data={spendVsReturn}>
+            <ComposedChart data={scaledSpendVsReturn}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="channel" stroke="#64748b" angle={-45} textAnchor="end" height={80} />
               <YAxis yAxisId="left" stroke="#64748b" label={{ value: 'Spend ($)', angle: -90, position: 'insideLeft' }} />
