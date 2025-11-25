@@ -42,8 +42,8 @@ const baseMetrics = {
 const HalfGauge: React.FC<{ fill: number; color: string }> = ({ fill, color }) => {
   const background = `conic-gradient(${color} ${fill}%, #e5e7eb 0)`
   return (
-    <div className="relative flex h-24 w-24 items-center justify-center">
-      <div className="h-full w-full rounded-full" style={{ background }} />
+    <div className="relative flex h-24 w-24 items-center justify-center transition-all duration-500">
+      <div className="h-full w-full rounded-full transition-all duration-500" style={{ background }} />
       <div className="absolute h-16 w-16 rounded-full bg-white" />
     </div>
   )
@@ -166,7 +166,7 @@ export function SalesPipeline() {
         </div>
 
         {/* KPI Cards Grid */}
-        <div className="grid gap-4 sm:grid-cols-4 animate-stagger-container">
+        <div className="grid gap-4 sm:grid-cols-4 animate-stagger-container" key={selectedPeriod}>
           <div className="animate-stagger">
             <HalfMetricCard
               icon={Users}
@@ -210,7 +210,7 @@ export function SalesPipeline() {
         </div>
 
         {/* Customer Revenue Card */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm">
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm animate-scale-in" key={`revenue-${selectedPeriod}`}>
           <h2 className="text-sm font-semibold text-slate-900">Customer Revenue</h2>
           <p className="mt-1 text-xs text-slate-500">Revenue by customer (top 6).</p>
 
