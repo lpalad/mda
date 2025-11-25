@@ -240,6 +240,9 @@ export function MarketingROI() {
     <section className="space-y-8">
       {/* Header */}
       <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+          Business Intelligence Platform | Leonard Palad - Principle Business Analyst
+        </p>
         <div className="flex items-start justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Marketing ROI Dashboard</h1>

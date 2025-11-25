@@ -28,11 +28,11 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
     <section className="space-y-8">
       {/* HEADER */}
       <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+          Business Intelligence Platform | Leonard Palad - Principle Business Analyst
+        </p>
         <div className="bg-slate-50 rounded-xl p-8 border border-slate-200">
-          <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-2">
-            Law / Accounting firm example
-          </p>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Partner performance</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Partner Performance</h1>
           <p className="text-slate-600">
             How individual partners convert firm-generated demand into matters.
           </p>

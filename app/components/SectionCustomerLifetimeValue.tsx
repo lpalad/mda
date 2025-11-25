@@ -151,6 +151,9 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
     <section className="space-y-8">
       {/* HEADER */}
       <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+          Business Intelligence Platform | Leonard Palad - Principle Business Analyst
+        </p>
         <h1 className="text-3xl font-bold text-slate-900">Customer Lifetime Value</h1>
         <p className="text-slate-600 mt-1">Comprehensive CLV analysis by demographics, loyalty, and geography.</p>
 

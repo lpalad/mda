@@ -51,7 +51,7 @@ const KpiCircle: React.FC<KpiCircleProps> = ({ label, value, delta, progress, co
   const strokeDashoffset = circumference - (progress / 100) * circumference
 
   return (
-    <div className="flex flex-col items-center animate-bounce-in">
+    <div className="flex flex-col items-center">
       <div className="relative w-32 h-32 flex items-center justify-center">
         <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 120 120">
           <circle cx="60" cy="60" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
@@ -128,6 +128,9 @@ export function SalesPipeline() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
         {/* Header Card */}
         <div className="rounded-3xl bg-white/90 p-6 shadow-sm ring-1 ring-slate-200">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">
+            Business Intelligence Platform | Leonard Palad - Principle Business Analyst
+          </p>
           <div className="flex items-start justify-between mb-4">
             <div>
               <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Sales Pipeline</h1>
@@ -157,39 +160,47 @@ export function SalesPipeline() {
         </div>
 
         {/* KPI Cards Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" key={selectedPeriod}>
-          <KpiCircle
-            label="Num of Customers"
-            value={numCustomers.toString()}
-            delta="Active customers"
-            progress={Math.min((numCustomers / 12) * 100, 100)}
-            color="#38bdf8"
-          />
-          <KpiCircle
-            label="Total Revenue"
-            value={`$${(totalRevenue / 1000).toFixed(0)}k`}
-            delta="From customers"
-            progress={Math.min((totalRevenue / 100000) * 100, 100)}
-            color="#22c55e"
-          />
-          <KpiCircle
-            label="Avg Revenue Per Customer"
-            value={`$${(avgRevenue / 1000).toFixed(1)}k`}
-            delta="Customer value"
-            progress={Math.min((avgRevenue / 20000) * 100, 100)}
-            color="#a855f7"
-          />
-          <KpiCircle
-            label="Num of Products Sold"
-            value={numProductsSold.toString()}
-            delta="Total quantity"
-            progress={Math.min((numProductsSold / 2000) * 100, 100)}
-            color="#f97316"
-          />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 animate-stagger-container">
+          <div className="animate-stagger">
+            <KpiCircle
+              label="Num of Customers"
+              value={numCustomers.toString()}
+              delta="Active customers"
+              progress={Math.min((numCustomers / 12) * 100, 100)}
+              color="#38bdf8"
+            />
+          </div>
+          <div className="animate-stagger">
+            <KpiCircle
+              label="Total Revenue"
+              value={`$${(totalRevenue / 1000).toFixed(0)}k`}
+              delta="From customers"
+              progress={Math.min((totalRevenue / 100000) * 100, 100)}
+              color="#22c55e"
+            />
+          </div>
+          <div className="animate-stagger">
+            <KpiCircle
+              label="Avg Revenue Per Customer"
+              value={`$${(avgRevenue / 1000).toFixed(1)}k`}
+              delta="Customer value"
+              progress={Math.min((avgRevenue / 20000) * 100, 100)}
+              color="#a855f7"
+            />
+          </div>
+          <div className="animate-stagger">
+            <KpiCircle
+              label="Num of Products Sold"
+              value={numProductsSold.toString()}
+              delta="Total quantity"
+              progress={Math.min((numProductsSold / 2000) * 100, 100)}
+              color="#f97316"
+            />
+          </div>
         </div>
 
         {/* Customer Revenue Card */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm animate-scale-in" key={`revenue-${selectedPeriod}`}>
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm animate-scale-in">
           <h2 className="text-sm font-semibold text-slate-900">Customer Revenue</h2>
           <p className="mt-1 text-xs text-slate-500">Revenue by customer (top 6).</p>
 
