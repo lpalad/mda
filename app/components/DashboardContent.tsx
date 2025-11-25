@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { LeadQualityAnalytics } from '@/app/components/LeadQualityAnalytics'
 import { MarketingROI } from '@/app/components/SectionMarketing-ROI'
 import { PartnerPerformance } from '@/app/components/SectionPartnerPerformance'
+import { SalesPipeline } from '@/app/components/SectionSalesPipeline'
 import { Lead } from '@/app/types/lead'
 import { BarChart3, TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
 
@@ -80,8 +81,13 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
             <PartnerPerformance leads={filteredLeads} />
           )}
 
+          {/* Sales Pipeline Section */}
+          {currentSection === 'sales-pipeline' && (
+            <SalesPipeline leads={filteredLeads} />
+          )}
+
           {/* Placeholder for other sections */}
-          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && currentSection !== 'partner-performance' && (
+          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && currentSection !== 'partner-performance' && currentSection !== 'sales-pipeline' && (
             <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">
                 {sidebarSections.find((s) => s.id === currentSection)?.label}
