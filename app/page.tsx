@@ -81,6 +81,7 @@ const SectionCard = ({
   status,
   footer,
   visual,
+  href,
 }: {
   icon: any
   title: string
@@ -89,109 +90,114 @@ const SectionCard = ({
   status: string
   footer: string
   visual: React.ReactNode
+  href: string
 }) => (
-  <div className="group flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg ring-1 ring-slate-100">
-    <div>
-      <div className="mb-4 flex flex-row items-start justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-slate-900 text-slate-50">
-            <Icon className="h-4 w-4" />
+  <a href={href} className="group block h-full">
+    <div className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg ring-1 ring-slate-100">
+      <div>
+        <div className="mb-4 flex flex-row items-start justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-slate-900 text-slate-50">
+              <Icon className="h-4 w-4" />
+            </div>
+            <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
           </div>
-          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+          <StatusBadge label={status} />
         </div>
-        <StatusBadge label={status} />
+
+        <p className="text-2xl font-semibold text-slate-900">{kpi}</p>
+        <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
+        {visual}
       </div>
 
-      <p className="text-2xl font-semibold text-slate-900">{kpi}</p>
-      <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
-      {visual}
+      <div className="mt-4 flex items-center justify-between text-[11px] text-slate-500">
+        <span>{footer}</span>
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600">
+          View dashboard
+          <ArrowRight className="h-3 w-3" />
+        </span>
+      </div>
     </div>
-
-    <div className="mt-4 flex items-center justify-between text-[11px] text-slate-500">
-      <span>{footer}</span>
-      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600">
-        View dashboard
-        <ArrowRight className="h-3 w-3" />
-      </span>
-    </div>
-  </div>
+  </a>
 )
 
 const PredictiveCard = () => (
-  <div className="col-span-1 mt-4 grid gap-6 rounded-3xl border border-slate-800 bg-slate-900 p-6 text-slate-50 shadow-lg ring-1 ring-slate-800 sm:col-span-3">
-    <div>
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            ⚡ Predictive Analytics
-          </p>
-          <h2 className="mt-2 text-2xl font-bold">Your next 90 days, forecasted.</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Revenue forecast based on current pipeline, conversions, and historical patterns.
-          </p>
+  <a href="/dashboard?section=predictive-analytics" className="group block col-span-1 mt-4 sm:col-span-3">
+    <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900 p-6 text-slate-50 shadow-lg ring-1 ring-slate-800 transition-all duration-200 group-hover:-translate-y-1 group-hover:border-slate-700 group-hover:shadow-xl">
+      <div>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              ⚡ Predictive Analytics
+            </p>
+            <h2 className="mt-2 text-2xl font-bold">Your next 90 days, forecasted.</h2>
+            <p className="mt-2 text-sm text-slate-400">
+              Revenue forecast based on current pipeline, conversions, and historical patterns.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            Forecasted Revenue
-          </p>
-          <p className="mt-2 text-3xl font-bold">$2.8M</p>
-          <p className="mt-1 flex items-center gap-1 text-xs text-emerald-400">
-            <TrendingUp className="h-3 w-3" /> +19% vs last 90 days
-          </p>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              Forecasted Revenue
+            </p>
+            <p className="mt-2 text-3xl font-bold">$2.8M</p>
+            <p className="mt-1 flex items-center gap-1 text-xs text-emerald-400">
+              <TrendingUp className="h-3 w-3" /> +19% vs last 90 days
+            </p>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              Confidence Range
+            </p>
+            <p className="mt-2 text-2xl font-bold">$2.3M – $3.1M</p>
+            <p className="mt-1 text-xs text-slate-400">95% confidence interval</p>
+          </div>
         </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            Confidence Range
-          </p>
-          <p className="mt-2 text-2xl font-bold">$2.3M – $3.1M</p>
-          <p className="mt-1 text-xs text-slate-400">95% confidence interval</p>
-        </div>
-      </div>
 
-      <div className="mt-6 border-t border-slate-800 pt-6">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-          Revenue Forecast
+        <div className="mt-6 border-t border-slate-800 pt-6">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            Revenue Forecast
+          </p>
+          <div className="flex items-end gap-2">
+            {[40, 50, 45, 55, 60, 50, 65, 70].map((height, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-sm bg-emerald-500"
+                style={{ height: `${height * 0.8}px` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between border-t border-slate-800 pt-6">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="text-xs text-slate-400">Low risk</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-amber-500" />
+              <span className="text-xs text-slate-400">Medium risk</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+              <span className="text-xs text-slate-400">High risk</span>
+            </div>
+          </div>
+          <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-50 group-hover:gap-3">
+            Open Forecast Workspace
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        <p className="mt-4 text-[11px] text-slate-500">
+          Model trained on 18 months of closed deals, channel attribution, and seasonal patterns.
         </p>
-        <div className="flex items-end gap-2">
-          {[40, 50, 45, 55, 60, 50, 65, 70].map((height, i) => (
-            <div
-              key={i}
-              className="flex-1 rounded-sm bg-emerald-500"
-              style={{ height: `${height * 0.8}px` }}
-            />
-          ))}
-        </div>
       </div>
-
-      <div className="mt-6 flex items-center justify-between border-t border-slate-800 pt-6">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-xs text-slate-400">Low risk</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-amber-500" />
-            <span className="text-xs text-slate-400">Medium risk</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-red-500" />
-            <span className="text-xs text-slate-400">High risk</span>
-          </div>
-        </div>
-        <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-50">
-          Open Forecast Workspace
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
-
-      <p className="mt-4 text-[11px] text-slate-500">
-        Model trained on 18 months of closed deals, channel attribution, and seasonal patterns.
-      </p>
     </div>
-  </div>
+  </a>
 )
 
 export default function DashboardHub() {
@@ -229,6 +235,7 @@ export default function DashboardHub() {
             status="On track"
             footer="The firm in one page."
             visual={<MiniBars />}
+            href="/dashboard?section=executive-summary"
           />
 
           {/* Marketing ROI */}
@@ -240,6 +247,7 @@ export default function DashboardHub() {
             status="High impact"
             footer="See what pays."
             visual={<MiniBars />}
+            href="/dashboard?section=marketing-roi"
           />
 
           {/* Lead Quality */}
@@ -251,6 +259,7 @@ export default function DashboardHub() {
             status="Strong"
             footer="Know who converts."
             visual={<MiniDonut />}
+            href="/dashboard?section=lead-quality"
           />
 
           {/* Sales Pipeline */}
@@ -262,6 +271,7 @@ export default function DashboardHub() {
             status="3.1x coverage"
             footer="Where deals move."
             visual={<MiniFunnel />}
+            href="/dashboard?section=sales-pipeline"
           />
 
           {/* Partner Performance */}
@@ -273,6 +283,7 @@ export default function DashboardHub() {
             status="Strategic"
             footer="Real contribution."
             visual={<MiniSpark />}
+            href="/dashboard?section=partner-performance"
           />
 
           {/* Client Lifetime Value */}
@@ -284,6 +295,7 @@ export default function DashboardHub() {
             status="Upsell ready"
             footer="Your most profitable clients."
             visual={<MiniBars />}
+            href="/dashboard?section=client-lifetime-value"
           />
 
           {/* Predictive Analytics Card spanning full width */}
