@@ -245,3 +245,167 @@ export function getFeatureImportance() {
     { feature: 'Communication Preference', importance: 0.07 },
   ]
 }
+
+// Marketing ROI Data
+const channelSpendProfiles: Record<LeadSource, { monthlySpend: number }> = {
+  'Google Ads': { monthlySpend: 15000 },
+  'LinkedIn': { monthlySpend: 12000 },
+  'Referrals': { monthlySpend: 3000 },
+  'SEO': { monthlySpend: 8000 },
+  'Social Media': { monthlySpend: 5000 },
+  'Email': { monthlySpend: 2000 },
+}
+
+export function getMarketingROIByChannel(leads: Lead[]) {
+  const channels = new Map<LeadSource, Lead[]>()
+
+  leads.forEach(lead => {
+    if (!channels.has(lead.source)) {
+      channels.set(lead.source, [])
+    }
+    channels.get(lead.source)!.push(lead)
+  })
+
+  return Array.from(channels.entries()).map(([channel, channelLeads]) => {
+    const monthlySpend = channelSpendProfiles[channel].monthlySpend
+    const highQuality = channelLeads.filter(l => l.qualityTier === 'High').length
+    const totalCost = channelLeads.reduce((sum, l) => sum + l.costPerLead, 0)
+    const converted = channelLeads.filter(l => l.converted).length
+    const revenue = channelLeads
+      .filter(l => l.converted)
+      .reduce((sum, l) => sum + l.revenuePotential, 0)
+
+    const roi = monthlySpend > 0 ? ((revenue - monthlySpend) / monthlySpend) * 100 : 0
+    const costPerHighQualityLead = highQuality > 0 ? totalCost / highQuality : 0
+    const conversionRate = (converted / channelLeads.length) * 100
+
+    return {
+      channel,
+      monthlySpend,
+      spend: monthlySpend,
+      revenue,
+      roi: Math.round(roi),
+      costPerHighQualityLead: Math.round(costPerHighQualityLead),
+      conversionRate: Math.round(conversionRate * 10) / 10,
+      leadVolume: channelLeads.length,
+      highQualityLeads: highQuality,
+      convertedLeads: converted,
+    }
+  }).sort((a, b) => b.roi - a.roi)
+}
+
+export function getCostPerLeadByChannel(leads: Lead[]) {
+  const channels = new Map<LeadSource, Lead[]>()
+
+  leads.forEach(lead => {
+    if (!channels.has(lead.source)) {
+      channels.set(lead.source, [])
+    }
+    channels.get(lead.source)!.push(lead)
+  })
+
+  return Array.from(channels.entries()).map(([channel, channelLeads]) => {
+    const highQuality = channelLeads.filter(l => l.qualityTier === 'High').length
+    const totalCost = channelLeads.reduce((sum, l) => sum + l.costPerLead, 0)
+    const avgCostPerLead = channelLeads.length > 0 ? totalCost / channelLeads.length : 0
+    const costPerHighQuality = highQuality > 0 ? totalCost / highQuality : 0
+
+    return {
+      channel,
+      costPerLeadAll: Math.round(avgCostPerLead),
+      costPerLeadHQ: Math.round(costPerHighQuality),
+      efficiency: highQuality > 0 ? ((highQuality / channelLeads.length) * 100).toFixed(1) : '0',
+    }
+  })
+}
+
+export function getSpendVsReturnData(leads: Lead[]) {
+  const channels = new Map<LeadSource, Lead[]>()
+
+  leads.forEach(lead => {
+    if (!channels.has(lead.source)) {
+      channels.set(lead.source, [])
+    }
+    channels.get(lead.source)!.push(lead)
+  })
+
+  return Array.from(channels.entries()).map(([channel, channelLeads]) => {
+    const monthlySpend = channelSpendProfiles[channel].monthlySpend
+    const revenue = channelLeads
+      .filter(l => l.converted)
+      .reduce((sum, l) => sum + l.revenuePotential, 0)
+    const highQuality = channelLeads.filter(l => l.qualityTier === 'High').length
+
+    return {
+      channel,
+      spend: monthlySpend,
+      return: revenue,
+      highQualityLeads: highQuality,
+      profitability: revenue - monthlySpend,
+    }
+  })
+}
+
+export function getCampaignQuadrantData(leads: Lead[]) {
+  const channels = new Map<LeadSource, Lead[]>()
+
+  leads.forEach(lead => {
+    if (!channels.has(lead.source)) {
+      channels.set(lead.source, [])
+    }
+    channels.get(lead.source)!.push(lead)
+  })
+
+  return Array.from(channels.entries()).map(([channel, channelLeads]) => {
+    const highQuality = channelLeads.filter(l => l.qualityTier === 'High').length
+    const totalCost = channelLeads.reduce((sum, l) => sum + l.costPerLead, 0)
+    const converted = channelLeads.filter(l => l.converted).length
+    const conversionRate = (converted / channelLeads.length) * 100
+    const costPerHighQuality = highQuality > 0 ? totalCost / highQuality : 0
+
+    return {
+      channel,
+      x: Math.round(costPerHighQuality), // Cost per HQ Lead
+      y: Math.round(conversionRate * 10) / 10, // Conversion Rate
+      size: channelLeads.length, // Bubble size = volume
+      value: channelLeads.length,
+    }
+  })
+}
+
+export function getTrendData(leads: Lead[]) {
+  const months = new Map<string, Lead[]>()
+
+  // Group leads by month
+  leads.forEach(lead => {
+    const leadDate = new Date(lead.dateCreated)
+    const monthKey = `${leadDate.getFullYear()}-${String(leadDate.getMonth() + 1).padStart(2, '0')}`
+    if (!months.has(monthKey)) {
+      months.set(monthKey, [])
+    }
+    months.get(monthKey)!.push(lead)
+  })
+
+  const sortedMonths = Array.from(months.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-12) // Last 12 months
+
+  return sortedMonths.map(([monthKey, monthLeads]) => {
+    const highQuality = monthLeads.filter(l => l.qualityTier === 'High').length
+    const converted = monthLeads.filter(l => l.converted).length
+    const monthlySpend = Array.from(months.values())
+      .flat()
+      .reduce((sum, l) => sum + channelSpendProfiles[l.source].monthlySpend / 12, 0)
+    const revenue = monthLeads.filter(l => l.converted).reduce((sum, l) => sum + l.revenuePotential, 0)
+
+    return {
+      month: monthKey,
+      spend: Math.round(monthlySpend),
+      leads: monthLeads.length,
+      highQualityLeads: highQuality,
+      revenue: Math.round(revenue),
+      conversionRate: Math.round((converted / monthLeads.length) * 100),
+      roi: monthlySpend > 0 ? Math.round(((revenue - monthlySpend) / monthlySpend) * 100) : 0,
+    }
+  })
+}

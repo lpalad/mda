@@ -8,6 +8,7 @@ import { SectionC } from '@/app/components/SectionC-LeadSourceBreakdown'
 import { SectionD } from '@/app/components/SectionD-LeadJourney'
 import { SectionE } from '@/app/components/SectionE-LeadProfile'
 import { SectionF } from '@/app/components/SectionF-Recommendations'
+import { MarketingROI } from '@/app/components/SectionMarketing-ROI'
 import { Lead } from '@/app/types/lead'
 import { BarChart3, TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
 
@@ -105,8 +106,13 @@ export function DashboardContent({ allLeads, filteredLeads }: DashboardContentPr
             </>
           )}
 
+          {/* Marketing ROI Section */}
+          {currentSection === 'marketing-roi' && (
+            <MarketingROI leads={filteredLeads} />
+          )}
+
           {/* Placeholder for other sections */}
-          {currentSection !== 'lead-quality' && (
+          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && (
             <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">
                 {sidebarSections.find((s) => s.id === currentSection)?.label}
