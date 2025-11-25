@@ -1,0 +1,38 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lpalad/mda.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lpalad/mda/issues"
+  },
+  "homepage": "https://github.com/lpalad/mda#readme",
+  "dependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.22",
+    "lucide-react": "^0.554.0",
+    "next": "^14.2.33",
+    "postcss": "^8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-is": "^19.2.0",
+    "recharts": "^3.5.0",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3",
+    "zustand": "^5.0.8"
+  }
+}
