@@ -256,11 +256,11 @@ export function MarketingROI() {
       </div>
 
       {/* KPI Circles */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KpiCircle label="Impressions" value={formatImpressions} delta={`+${Math.round(multiplier * 12)}%`} progress={Math.min(72 * Math.sqrt(multiplier) / 2.8, 100)} color="#0ea5e9" />
-        <KpiCircle label="Clicks" value={formatClicks} delta={`+${Math.round(multiplier * 8)}%`} progress={Math.min(68 * Math.sqrt(multiplier) / 2.8, 100)} color="#10b981" />
-        <KpiCircle label="CTR" value={`${scaledCTR}%`} delta={`+${(scaledCTR - baseMetrics.ctr).toFixed(2)} pts`} progress={Math.min(scaledCTR * 100, 100)} color="#6366f1" />
-        <KpiCircle label="CPM" value={`$${scaledCPM}`} delta={`${scaledCPM > baseMetrics.cpm ? '+' : '-'}${Math.abs(scaledCPM - baseMetrics.cpm).toFixed(2)}`} progress={Math.min(scaledCPM * 15, 100)} color="#f59e0b" />
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-stagger-container">
+        <div className="animate-stagger"><KpiCircle label="Impressions" value={formatImpressions} delta={`+${Math.round(multiplier * 12)}%`} progress={Math.min(72 * Math.sqrt(multiplier) / 2.8, 100)} color="#0ea5e9" /></div>
+        <div className="animate-stagger"><KpiCircle label="Clicks" value={formatClicks} delta={`+${Math.round(multiplier * 8)}%`} progress={Math.min(68 * Math.sqrt(multiplier) / 2.8, 100)} color="#10b981" /></div>
+        <div className="animate-stagger"><KpiCircle label="CTR" value={`${scaledCTR}%`} delta={`+${(scaledCTR - baseMetrics.ctr).toFixed(2)} pts`} progress={Math.min(scaledCTR * 100, 100)} color="#6366f1" /></div>
+        <div className="animate-stagger"><KpiCircle label="CPM" value={`$${scaledCPM}`} delta={`${scaledCPM > baseMetrics.cpm ? '+' : '-'}${Math.abs(scaledCPM - baseMetrics.cpm).toFixed(2)}`} progress={Math.min(scaledCPM * 15, 100)} color="#f59e0b" /></div>
       </div>
 
       {/* Channel Performance */}

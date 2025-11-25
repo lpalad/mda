@@ -108,30 +108,30 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* KPI CARDS + DONUT CHART (Top Section) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-stagger-container">
         {/* High-Quality Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center animate-stagger">
           <p className="text-sm text-slate-600 mb-2">High-Quality Leads</p>
           <p className="text-4xl font-bold text-green-600">{scaledSegmentation.high.percentage}%</p>
           <p className="text-sm text-slate-700 mt-2 font-semibold">{scaledSegmentation.high.count.toLocaleString()} leads</p>
         </div>
 
         {/* Medium-Quality Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center animate-stagger">
           <p className="text-sm text-slate-600 mb-2">Medium-Quality Leads</p>
           <p className="text-4xl font-bold text-amber-600">{scaledSegmentation.medium.percentage}%</p>
           <p className="text-sm text-slate-700 mt-2 font-semibold">{scaledSegmentation.medium.count.toLocaleString()} leads</p>
         </div>
 
         {/* Low-Quality Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center animate-stagger">
           <p className="text-sm text-slate-600 mb-2">Low-Quality Leads</p>
           <p className="text-4xl font-bold text-red-600">{scaledSegmentation.low.percentage}%</p>
           <p className="text-sm text-slate-700 mt-2 font-semibold">{scaledSegmentation.low.count.toLocaleString()} leads</p>
         </div>
 
         {/* Donut Chart */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
@@ -153,7 +153,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 1 — Quality Score Distribution Histogram */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality Score Distribution</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={scoreDistribution}>
@@ -173,7 +173,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 3 — Lead Source vs Quality Stacked Bar */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Source vs Quality</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={sourceQuality}>
@@ -196,7 +196,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 4 — Feature Importance Horizontal Bar */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Predictive Model: Feature Importance</h2>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
@@ -220,7 +220,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 5 — Lead Quality Through Funnel */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality Through the Funnel</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={funnelData}>
@@ -243,7 +243,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 6 — Quality Heatmap (Day/Time) */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality by Day & Time</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
@@ -287,7 +287,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
       </div>
 
       {/* CHART 7 — Quality Trend Over Time */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 animate-scale-in">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality Trend Over Time</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={trendData}>

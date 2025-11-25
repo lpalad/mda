@@ -176,9 +176,9 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
       </div>
 
       {/* TOP 3 DONUT CHARTS ROW */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger-container">
         {/* Total CLV by Education */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Education</h2>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -202,7 +202,7 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         </div>
 
         {/* Total CLV by Loyalty Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Total CLV by Loyalty Card</h2>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>

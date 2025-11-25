@@ -166,39 +166,47 @@ export function SalesPipeline() {
         </div>
 
         {/* KPI Cards Grid */}
-        <div className="grid gap-4 sm:grid-cols-4">
-          <HalfMetricCard
-            icon={Users}
-            label="Num of Customers"
-            value={numCustomers.toString()}
-            sublabel="Active customers"
-            fill={80}
-            color="#38bdf8"
-          />
-          <HalfMetricCard
-            icon={DollarSign}
-            label="Total Revenue"
-            value={`$${(totalRevenue / 1000).toFixed(0)}k`}
-            sublabel="From customers"
-            fill={65}
-            color="#22c55e"
-          />
-          <HalfMetricCard
-            icon={Activity}
-            label="Avg Revenue Per Customer"
-            value={`$${(avgRevenue / 1000).toFixed(1)}k`}
-            sublabel="Customer value"
-            fill={70}
-            color="#a855f7"
-          />
-          <HalfMetricCard
-            icon={Package2}
-            label="Num of Products Sold"
-            value={numProductsSold.toString()}
-            sublabel="Total quantity"
-            fill={55}
-            color="#f97316"
-          />
+        <div className="grid gap-4 sm:grid-cols-4 animate-stagger-container">
+          <div className="animate-stagger">
+            <HalfMetricCard
+              icon={Users}
+              label="Num of Customers"
+              value={numCustomers.toString()}
+              sublabel="Active customers"
+              fill={80}
+              color="#38bdf8"
+            />
+          </div>
+          <div className="animate-stagger">
+            <HalfMetricCard
+              icon={DollarSign}
+              label="Total Revenue"
+              value={`$${(totalRevenue / 1000).toFixed(0)}k`}
+              sublabel="From customers"
+              fill={65}
+              color="#22c55e"
+            />
+          </div>
+          <div className="animate-stagger">
+            <HalfMetricCard
+              icon={Activity}
+              label="Avg Revenue Per Customer"
+              value={`$${(avgRevenue / 1000).toFixed(1)}k`}
+              sublabel="Customer value"
+              fill={70}
+              color="#a855f7"
+            />
+          </div>
+          <div className="animate-stagger">
+            <HalfMetricCard
+              icon={Package2}
+              label="Num of Products Sold"
+              value={numProductsSold.toString()}
+              sublabel="Total quantity"
+              fill={55}
+              color="#f97316"
+            />
+          </div>
         </div>
 
         {/* Customer Revenue Card */}

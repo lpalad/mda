@@ -40,8 +40,8 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
       </div>
 
       {/* KPI CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-stagger-container">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Marketing Spend
           </p>
@@ -51,7 +51,7 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
           <p className="text-sm text-slate-600">Total for selected period</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Cost Per Qualified Lead
           </p>
@@ -61,7 +61,7 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
           <p className="text-sm text-slate-600">Marketing + handling</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             Lead → Matter
           </p>
@@ -71,7 +71,7 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
           <p className="text-sm text-slate-600">Firm-wide conversion</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 animate-stagger">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
             New Revenue
           </p>
@@ -83,7 +83,7 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
       </div>
 
       {/* PARTNER SNAPSHOT TABLE */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-scale-in">
         <div className="p-6 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">
             Partner Snapshot
@@ -145,7 +145,7 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
       </div>
 
       {/* INSIGHT BOX */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6 animate-scale-in">
         <p className="text-sm text-slate-700">
           <span className="font-semibold text-emerald-900">Key Insight:</span> Partners with
           high lead-to-matter conversion rates are those engaging consistently with marketing
