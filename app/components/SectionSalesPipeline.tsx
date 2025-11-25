@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Users, DollarSign, Package2, Activity } from 'lucide-react'
 
 // ===== PERIOD CONFIGURATION =====
 
@@ -39,50 +38,42 @@ const baseMetrics = {
 
 // ===== HELPER COMPONENTS =====
 
-const HalfGauge: React.FC<{ fill: number; color: string }> = ({ fill, color }) => {
-  const background = `conic-gradient(${color} ${fill}%, #e5e7eb 0)`
-  return (
-    <div className="relative flex h-24 w-24 items-center justify-center transition-all duration-500 animate-bounce-in">
-      <div className="h-full w-full rounded-full transition-all duration-500" style={{ background }} />
-      <div className="absolute h-16 w-16 rounded-full bg-white" />
-    </div>
-  )
-}
-
-interface HalfMetricCardProps {
-  icon: React.ComponentType<{ className?: string }>
+interface KpiCircleProps {
   label: string
   value: string
-  sublabel: string
-  fill: number
+  delta: string
+  progress: number
   color: string
 }
 
-const HalfMetricCard: React.FC<HalfMetricCardProps> = ({
-  icon: Icon,
-  label,
-  value,
-  sublabel,
-  fill,
-  color,
-}) => {
+const KpiCircle: React.FC<KpiCircleProps> = ({ label, value, delta, progress, color }) => {
+  const circumference = 2 * Math.PI * 45
+  const strokeDashoffset = circumference - (progress / 100) * circumference
+
   return (
-    <div className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm">
-      <div className="mb-2 flex flex-row items-center justify-between space-y-0">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-slate-900 text-slate-50">
-            <Icon className="h-4 w-4" />
-          </div>
-          <p className="text-xs font-semibold text-slate-700">{label}</p>
+    <div className="flex flex-col items-center animate-bounce-in">
+      <div className="relative w-32 h-32 flex items-center justify-center">
+        <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#e2e8f0" strokeWidth="8" />
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            fill="none"
+            stroke={color}
+            strokeWidth="8"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.3s ease' }}
+          />
+        </svg>
+        <div className="absolute text-center">
+          <p className="text-2xl font-bold text-slate-900">{value}</p>
+          <p className="text-xs text-emerald-600 font-semibold">{delta}</p>
         </div>
       </div>
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <p className="text-xl font-semibold text-slate-900">{value}</p>
-          <p className="mt-1 text-[11px] text-slate-500">{sublabel}</p>
-        </div>
-        <HalfGauge fill={fill} color={color} />
-      </div>
+      <p className="mt-4 text-sm font-medium text-slate-600 text-center">{label}</p>
     </div>
   )
 }
@@ -166,47 +157,35 @@ export function SalesPipeline() {
         </div>
 
         {/* KPI Cards Grid */}
-        <div className="grid gap-4 sm:grid-cols-4 animate-stagger-container" key={selectedPeriod}>
-          <div className="animate-stagger">
-            <HalfMetricCard
-              icon={Users}
-              label="Num of Customers"
-              value={numCustomers.toString()}
-              sublabel="Active customers"
-              fill={80}
-              color="#38bdf8"
-            />
-          </div>
-          <div className="animate-stagger">
-            <HalfMetricCard
-              icon={DollarSign}
-              label="Total Revenue"
-              value={`$${(totalRevenue / 1000).toFixed(0)}k`}
-              sublabel="From customers"
-              fill={65}
-              color="#22c55e"
-            />
-          </div>
-          <div className="animate-stagger">
-            <HalfMetricCard
-              icon={Activity}
-              label="Avg Revenue Per Customer"
-              value={`$${(avgRevenue / 1000).toFixed(1)}k`}
-              sublabel="Customer value"
-              fill={70}
-              color="#a855f7"
-            />
-          </div>
-          <div className="animate-stagger">
-            <HalfMetricCard
-              icon={Package2}
-              label="Num of Products Sold"
-              value={numProductsSold.toString()}
-              sublabel="Total quantity"
-              fill={55}
-              color="#f97316"
-            />
-          </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" key={selectedPeriod}>
+          <KpiCircle
+            label="Num of Customers"
+            value={numCustomers.toString()}
+            delta="Active customers"
+            progress={Math.min((numCustomers / 12) * 100, 100)}
+            color="#38bdf8"
+          />
+          <KpiCircle
+            label="Total Revenue"
+            value={`$${(totalRevenue / 1000).toFixed(0)}k`}
+            delta="From customers"
+            progress={Math.min((totalRevenue / 100000) * 100, 100)}
+            color="#22c55e"
+          />
+          <KpiCircle
+            label="Avg Revenue Per Customer"
+            value={`$${(avgRevenue / 1000).toFixed(1)}k`}
+            delta="Customer value"
+            progress={Math.min((avgRevenue / 20000) * 100, 100)}
+            color="#a855f7"
+          />
+          <KpiCircle
+            label="Num of Products Sold"
+            value={numProductsSold.toString()}
+            delta="Total quantity"
+            progress={Math.min((numProductsSold / 2000) * 100, 100)}
+            color="#f97316"
+          />
         </div>
 
         {/* Customer Revenue Card */}
