@@ -43,27 +43,7 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
         <p className="text-slate-600 mt-2">See who converts. See who doesn't. Let the data decide.</p>
       </div>
 
-      {/* CHART 1 — Quality Score Distribution Histogram */}
-      <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality Score Distribution</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={scoreDistribution}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="range" stroke="#64748b" />
-            <YAxis stroke="#64748b" />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-              }}
-            />
-            <Bar dataKey="count" fill="#0d9488" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* CHART 2 — KPI Cards + Donut Chart */}
+      {/* KPI CARDS + DONUT CHART (Top Section) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* High-Quality Card */}
         <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
@@ -106,6 +86,26 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* CHART 1 — Quality Score Distribution Histogram */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Lead Quality Score Distribution</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={scoreDistribution}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="range" stroke="#64748b" />
+            <YAxis stroke="#64748b" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#fff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+              }}
+            />
+            <Bar dataKey="count" fill="#0d9488" radius={[8, 8, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
       {/* CHART 3 — Lead Source vs Quality Stacked Bar */}
