@@ -42,7 +42,7 @@ const baseMetrics = {
 const HalfGauge: React.FC<{ fill: number; color: string }> = ({ fill, color }) => {
   const background = `conic-gradient(${color} ${fill}%, #e5e7eb 0)`
   return (
-    <div className="relative flex h-24 w-24 items-center justify-center transition-all duration-500">
+    <div className="relative flex h-24 w-24 items-center justify-center transition-all duration-500 animate-bounce-in">
       <div className="h-full w-full rounded-full transition-all duration-500" style={{ background }} />
       <div className="absolute h-16 w-16 rounded-full bg-white" />
     </div>
