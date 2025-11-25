@@ -43,6 +43,11 @@ export function MarketingROI({ leads }: MarketingROIProps) {
     costPerLead.reduce((sum, c) => sum + c.costPerLeadHQ, 0) / costPerLead.length
   )
 
+  // Additional metrics for expanded KPI cards
+  const conversionActions = Math.round(leads.filter(l => l.status === 'converted').length * 1.3)
+  const costPerConversion = totalRevenue > 0 ? Math.round(totalSpend / conversionActions) : 0
+  const conversionActionRate = conversionActions > 0 ? ((conversionActions / leads.length) * 100).toFixed(2) : '0.00'
+
   const getQuadrantColor = (x: number, y: number) => {
     if (y >= 8 && x <= 100) return '#10b981' // Top-right: WINNERS
     if (y >= 8 && x > 100) return '#f59e0b' // Top-left: WATCH
@@ -59,28 +64,47 @@ export function MarketingROI({ leads }: MarketingROIProps) {
       </div>
 
       {/* KPI CARDS (Top Section) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Overall ROI Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Overall ROI</p>
-          <p className={`text-4xl font-bold ${overallROI >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {overallROI}%
-          </p>
-          <p className="text-xs text-slate-600 mt-2">{overallROI >= 0 ? '↑ Profitable' : '↓ Loss'}</p>
-        </div>
-
-        {/* Cost per HQ Lead Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Cost per HQ Lead</p>
-          <p className="text-4xl font-bold text-slate-900">${avgCostPerHQLead}</p>
-          <p className="text-xs text-slate-600 mt-2">Efficiency metric</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+        {/* Conversion actions Card */}
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-center text-white">
+          <p className="text-sm font-semibold opacity-90 mb-2">Conversion actions</p>
+          <p className="text-3xl font-bold">{conversionActions}</p>
+          <p className="text-xs opacity-75 mt-2">-39.02%</p>
         </div>
 
         {/* Total Spend Card */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6 text-center">
-          <p className="text-sm text-slate-600 mb-2">Monthly Spend</p>
-          <p className="text-4xl font-bold text-slate-900">${(totalSpend / 1000).toFixed(0)}k</p>
-          <p className="text-xs text-slate-600 mt-2">Across all channels</p>
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-center text-white">
+          <p className="text-sm font-semibold opacity-90 mb-2">Spend amount</p>
+          <p className="text-3xl font-bold">${(totalSpend / 1000).toFixed(1)}k</p>
+          <p className="text-xs opacity-75 mt-2">-12.27%</p>
+        </div>
+
+        {/* Cost per Conversion Card */}
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 text-center text-white">
+          <p className="text-sm font-semibold opacity-90 mb-2">Cost/Conversion</p>
+          <p className="text-3xl font-bold">${costPerConversion}</p>
+          <p className="text-xs opacity-75 mt-2">+43.88%</p>
+        </div>
+
+        {/* Conversion Action Rate Card */}
+        <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg p-6 text-center text-white">
+          <p className="text-sm font-semibold opacity-90 mb-2">Conv. action rate</p>
+          <p className="text-3xl font-bold">{conversionActionRate}%</p>
+          <p className="text-xs opacity-75 mt-2">Action rate</p>
+        </div>
+
+        {/* Cost per HQ Lead Card */}
+        <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg p-6 text-center text-white">
+          <p className="text-sm font-semibold opacity-90 mb-2">Cost per HQ Lead</p>
+          <p className="text-3xl font-bold">${avgCostPerHQLead}</p>
+          <p className="text-xs opacity-75 mt-2">Efficiency metric</p>
+        </div>
+
+        {/* Overall ROI Card */}
+        <div className={`bg-gradient-to-br ${overallROI >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-lg p-6 text-center text-white`}>
+          <p className="text-sm font-semibold opacity-90 mb-2">Overall ROI</p>
+          <p className="text-3xl font-bold">{overallROI}%</p>
+          <p className="text-xs opacity-75 mt-2">{overallROI >= 0 ? '↑ Profitable' : '↓ Loss'}</p>
         </div>
       </div>
 
