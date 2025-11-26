@@ -32,7 +32,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
       <aside className="w-64 bg-white border-r border-slate-200 overflow-y-auto">
         <nav className="p-6 space-y-2">
           <Link
-            href="./"
+            href="/"
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors group"
           >
             <Home size={18} className="group-hover:text-primary" />
@@ -47,7 +47,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
               return (
                 <Link
                   key={section.id}
-                  href={`./dashboard?section=${section.id}`}
+                  href={`/dashboard?section=${section.id}`}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
                       ? 'bg-primary/10 text-primary border-l-2 border-primary'
