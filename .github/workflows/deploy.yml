@@ -60,3 +60,33 @@ jobs:
             --include "*.html" \
             --content-type "text/html" \
             --metadata-directive REPLACE
+
+      - name: Configure S3 routing for SPA paths
+        run: |
+          # Create routing rules to handle SPA routing in dashboard subfolder
+          # When a path doesn't exist (404), serve the dashboard root index.html
+          cat > /tmp/website-config.json << 'EOF'
+          {
+            "IndexDocument": {
+              "Suffix": "index.html"
+            },
+            "RoutingRules": [
+              {
+                "Condition": {
+                  "HttpErrorCodeReturnedEquals": "404",
+                  "KeyPrefixEquals": "dashboard/"
+                },
+                "Redirect": {
+                  "HostName": "${{ secrets.AWS_S3_BUCKET }}",
+                  "ReplaceKeyWith": "dashboard/index.html",
+                  "HttpRedirectCode": "200"
+                }
+              }
+            ]
+          }
+          EOF
+
+          # Apply website configuration
+          aws s3api put-bucket-website \
+            --bucket ${{ secrets.AWS_S3_BUCKET }} \
+            --website-configuration file:///tmp/website-config.json 2>/dev/null || true
