@@ -294,8 +294,8 @@ export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
         <div className="rounded-3xl bg-white/90 border border-slate-200 p-8 shadow-sm">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-1">Partner Performance</h1>
-              <p className="text-sm text-slate-600">Firm-level view of revenue, profit and client health by partner.</p>
+              <h1 className="text-3xl font-bold text-slate-900 mb-1">Lead Quality Analytics</h1>
+              <p className="text-sm text-slate-600">B2B Law Firm - Marketing Performance Dashboard</p>
             </div>
             <div className="flex gap-2">
               {PERIODS.map((period) => (

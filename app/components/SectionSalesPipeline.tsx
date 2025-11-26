@@ -133,8 +133,8 @@ export function SalesPipeline() {
           </p>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Sales Pipeline</h1>
-              <p className="mt-1 text-sm text-slate-500">Revenue breakdown by customers and products.</p>
+              <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Lead Quality Analytics</h1>
+              <p className="mt-1 text-sm text-slate-500">B2B Law Firm - Marketing Performance Dashboard</p>
             </div>
           </div>
 

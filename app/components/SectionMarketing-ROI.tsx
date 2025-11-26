@@ -285,8 +285,8 @@ export function MarketingROI() {
         </p>
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Marketing ROI Dashboard</h1>
-            <p className="text-slate-600 mt-2">Track spend, performance, and ROI across all marketing channels</p>
+            <h1 className="text-3xl font-bold text-slate-900">Lead Quality Analytics</h1>
+            <p className="text-slate-600 mt-2">B2B Law Firm - Marketing Performance Dashboard</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100">
             <PieChart size={18} className="text-slate-600" />

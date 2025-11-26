@@ -210,10 +210,10 @@ export default function DashboardHub() {
             Business Intelligence Platform | Leonard Palad - Principle Business Analyst
           </p>
           <h1 className="text-4xl font-bold">
-            Lead Quality Analytics
+            Revenue Intelligence Hub
           </h1>
           <p className="max-w-2xl text-sm text-slate-600">
-            B2B Law Firm - Marketing Performance Dashboard
+            Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.
           </p>
         </div>
 
