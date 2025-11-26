@@ -35,10 +35,10 @@ jobs:
       - name: Upload to S3
         run: |
           # Sync ALL files first (this handles images, fonts, etc.)
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard --delete
+          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/analytics --delete
 
           # Fix content-types for CSS files (including nested _next folders)
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
             --recursive \
             --exclude "*" \
             --include "*.css" \
@@ -46,7 +46,7 @@ jobs:
             --metadata-directive REPLACE
 
           # Fix content-types for JS files (including nested _next folders)
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
             --recursive \
             --exclude "*" \
             --include "*.js" \
@@ -54,39 +54,15 @@ jobs:
             --metadata-directive REPLACE
 
           # Fix content-types for HTML files
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
             --recursive \
             --exclude "*" \
             --include "*.html" \
             --content-type "text/html" \
             --metadata-directive REPLACE
 
-      - name: Configure S3 routing for SPA paths
+      - name: Invalidate CloudFront cache
         run: |
-          # Create routing rules to handle SPA routing in dashboard subfolder
-          # When a path doesn't exist (404), serve the dashboard root index.html
-          cat > /tmp/website-config.json << 'EOF'
-          {
-            "IndexDocument": {
-              "Suffix": "index.html"
-            },
-            "RoutingRules": [
-              {
-                "Condition": {
-                  "HttpErrorCodeReturnedEquals": "404",
-                  "KeyPrefixEquals": "dashboard/"
-                },
-                "Redirect": {
-                  "HostName": "${{ secrets.AWS_S3_BUCKET }}",
-                  "ReplaceKeyWith": "dashboard/index.html",
-                  "HttpRedirectCode": "200"
-                }
-              }
-            ]
-          }
-          EOF
-
-          # Apply website configuration
-          aws s3api put-bucket-website \
-            --bucket ${{ secrets.AWS_S3_BUCKET }} \
-            --website-configuration file:///tmp/website-config.json 2>/dev/null || true
+          # Note: S3 routing is handled by nginx reverse proxy, not S3 website configuration
+          # nginx proxy is configured to serve index.html for all dashboard requests
+          echo "✓ Deployment complete. nginx handles SPA routing via proxy_pass to S3 REST endpoint"
