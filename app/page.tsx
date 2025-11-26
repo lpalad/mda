@@ -122,7 +122,7 @@ const SectionCard = ({
 )
 
 const PredictiveCard = () => (
-  <a href="/analytics/marketing-roi" className="group block col-span-1 mt-4 sm:col-span-3">
+  <a href="/marketing-roi" className="group block col-span-1 mt-4 sm:col-span-3">
     <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900 p-6 text-slate-50 shadow-lg ring-1 ring-slate-800 transition-all duration-200 group-hover:-translate-y-1 group-hover:border-slate-700 group-hover:shadow-xl">
       <div>
         <div className="mb-6 flex items-start justify-between">
@@ -235,7 +235,7 @@ export default function DashboardHub() {
             status="High impact"
             footer="See what pays."
             visual={<MiniBars />}
-            href="/analytics/marketing-roi"
+            href="/marketing-roi"
           />
 
           {/* Lead Quality */}
@@ -247,7 +247,7 @@ export default function DashboardHub() {
             status="Strong"
             footer="Know who converts."
             visual={<MiniDonut />}
-            href="/analytics/lead-quality"
+            href="/lead-quality"
           />
 
           {/* Sales Pipeline */}
@@ -259,7 +259,7 @@ export default function DashboardHub() {
             status="3.1x coverage"
             footer="Where deals move."
             visual={<MiniFunnel />}
-            href="/analytics/sales-pipeline"
+            href="/sales-pipeline"
           />
 
           {/* Partner Performance */}
@@ -271,7 +271,7 @@ export default function DashboardHub() {
             status="Strategic"
             footer="Real contribution."
             visual={<MiniSpark />}
-            href="/analytics/partner-performance"
+            href="/partner-performance"
           />
 
           {/* Client Lifetime Value */}
@@ -283,7 +283,7 @@ export default function DashboardHub() {
             status="Upsell ready"
             footer="Your most profitable clients."
             visual={<MiniBars />}
-            href="/analytics/client-lifetime-value"
+            href="/client-lifetime-value"
           />
 
           {/* Predictive Analytics Card spanning full width */}
