@@ -34,10 +34,11 @@ jobs:
 
       - name: Upload to S3
         run: |
-          # Sync ALL files first (this handles images, fonts, etc.)
-          # out/analytics folder contents go to S3 root, so /analytics routes work correctly
+          # Sync build output to /analytics folder on S3
+          # out/ folder (which contains /, /_next/, /lead-quality/, etc.) goes to s3://bucket/analytics/
+          # This gives us: /analytics/, /analytics/_next/, /analytics/lead-quality/, etc.
           # DO NOT USE --delete FLAG - it deletes all files not in the build directory
-          aws s3 sync ./out/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics
+          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/analytics
 
           # Fix content-types for CSS files (including nested _next folders)
           aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/ s3://${{ secrets.AWS_S3_BUCKET }}/ \
