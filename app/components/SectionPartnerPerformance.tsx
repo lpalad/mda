@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Briefcase, DollarSign, TrendingUp, Users, PieChart, Target, Sparkles } from 'lucide-react'
+import { DollarSign, TrendingUp, Users, PieChart, Target, Sparkles } from 'lucide-react'
 
 type PartnerKey = 'Alex Carter' | 'Morgan Lee' | 'Jordan Patel' | 'Taylor Chen'
 
@@ -257,7 +257,7 @@ const PERIOD_MULTIPLIERS: Record<string, number> = {
   'Last 12 Months': 3.2,
 }
 
-export function PartnerPerformance({ leads }: PartnerPerformanceProps) {
+export function PartnerPerformance(_: PartnerPerformanceProps) {
   const [activePartner, setActivePartner] = useState<PartnerKey>('Alex Carter')
   const [activePeriod, setActivePeriod] = useState('Last 90 Days')
 

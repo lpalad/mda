@@ -73,7 +73,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
 
           {/* Marketing ROI Section */}
           {currentSection === 'marketing-roi' && (
-            <MarketingROI leads={filteredLeads} />
+            <MarketingROI />
           )}
 
           {/* Partner Performance Section */}
