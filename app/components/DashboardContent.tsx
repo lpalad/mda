@@ -11,11 +11,11 @@ import { Lead } from '@/app/types/lead'
 import { TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
 
 const sidebarSections = [
-  { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp },
-  { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search },
-  { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap },
-  { id: 'partner-performance', label: 'Partner Performance', icon: Users },
-  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem },
+  { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/analytics/marketing-roi' },
+  { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/analytics/lead-quality' },
+  { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/analytics/sales-pipeline' },
+  { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/analytics/partner-performance' },
+  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem, href: '/analytics/client-lifetime-value' },
 ]
 
 interface DashboardContentProps {
@@ -47,7 +47,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
               return (
                 <Link
                   key={section.id}
-                  href={`/analytics?section=${section.id}`}
+                  href={section.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
                       ? 'bg-primary/10 text-primary border-l-2 border-primary'
