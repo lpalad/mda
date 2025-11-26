@@ -133,8 +133,8 @@ export function SalesPipeline() {
           </p>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Lead Quality Analytics</h1>
-              <p className="mt-1 text-sm text-slate-500">B2B Law Firm - Marketing Performance Dashboard</p>
+              <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Revenue Intelligence Hub</h1>
+              <p className="mt-1 text-sm text-slate-500">Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.</p>
             </div>
           </div>
 

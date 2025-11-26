@@ -316,8 +316,8 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
           Business Intelligence Platform | Leonard Palad - Principle Business Analyst
         </p>
-        <h1 className="text-3xl font-bold text-slate-900">Lead Quality Analytics</h1>
-        <p className="text-slate-600 mt-1">B2B Law Firm - Marketing Performance Dashboard</p>
+        <h1 className="text-3xl font-bold text-slate-900">Revenue Intelligence Hub</h1>
+        <p className="text-slate-600 mt-1">Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.</p>
 
         {/* Period Filter - Rounded Pills */}
         <div className="mt-6 flex items-center gap-3 flex-wrap">
