@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { CustomerLifetimeValue } from '@/app/components/SectionCustomerLifetimeValue'
 import { DashboardNav } from '@/app/components/DashboardNav'
+import { BrandingHeader } from '@/app/components/BrandingHeader'
 import { generateMockLeads } from '@/app/lib/generateData'
 import { Lead } from '@/app/types/lead'
 
@@ -18,7 +19,8 @@ export default function ClientLifetimeValuePage() {
       <div className="flex flex-1 overflow-hidden">
         <DashboardNav currentSection="client-lifetime-value" />
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="max-w-6xl mx-auto px-6 py-6">
+            <BrandingHeader />
             <CustomerLifetimeValue leads={leads} />
             <footer className="mt-16 pt-12 border-t border-slate-200 text-center text-sm text-slate-600">
               <p>Marketing Analytics Dashboard • Last updated: {new Date().toLocaleDateString()}</p>
