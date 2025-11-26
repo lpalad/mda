@@ -11,11 +11,11 @@ import { Lead } from '@/app/types/lead'
 import { TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
 
 const sidebarSections = [
-  { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/analytics/marketing-roi' },
-  { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/analytics/lead-quality' },
-  { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/analytics/sales-pipeline' },
-  { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/analytics/partner-performance' },
-  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem, href: '/analytics/client-lifetime-value' },
+  { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
+  { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
+  { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/sales-pipeline' },
+  { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },
+  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem, href: '/client-lifetime-value' },
 ]
 
 interface DashboardContentProps {
