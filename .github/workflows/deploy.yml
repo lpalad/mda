@@ -34,19 +34,29 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
-            --content-type text/html \
+          # Sync ALL files first (this handles images, fonts, etc.)
+          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard --delete
+
+          # Fix content-types for CSS files (including nested _next folders)
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+            --recursive \
             --exclude "*" \
-            --include "*.html"
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
-            --content-type text/css \
+            --include "*.css" \
+            --content-type "text/css" \
+            --metadata-directive REPLACE
+
+          # Fix content-types for JS files (including nested _next folders)
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+            --recursive \
             --exclude "*" \
-            --include "*.css"
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
-            --content-type application/javascript \
+            --include "*.js" \
+            --content-type "application/javascript" \
+            --metadata-directive REPLACE
+
+          # Fix content-types for HTML files
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/dashboard s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
+            --recursive \
             --exclude "*" \
-            --include "*.js"
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/dashboard \
-            --exclude "*.html" \
-            --exclude "*.css" \
-            --exclude "*.js"
+            --include "*.html" \
+            --content-type "text/html" \
+            --metadata-directive REPLACE
