@@ -235,7 +235,7 @@ export default function DashboardHub() {
             status="High impact"
             footer="See what pays."
             visual={<MiniBars />}
-            href="/dashboard?section=marketing-roi"
+            href="./dashboard?section=marketing-roi"
           />
 
           {/* Lead Quality */}
@@ -247,7 +247,7 @@ export default function DashboardHub() {
             status="Strong"
             footer="Know who converts."
             visual={<MiniDonut />}
-            href="/dashboard?section=lead-quality"
+            href="./dashboard?section=lead-quality"
           />
 
           {/* Sales Pipeline */}
@@ -259,7 +259,7 @@ export default function DashboardHub() {
             status="3.1x coverage"
             footer="Where deals move."
             visual={<MiniFunnel />}
-            href="/dashboard?section=sales-pipeline"
+            href="./dashboard?section=sales-pipeline"
           />
 
           {/* Partner Performance */}
@@ -271,7 +271,7 @@ export default function DashboardHub() {
             status="Strategic"
             footer="Real contribution."
             visual={<MiniSpark />}
-            href="/dashboard?section=partner-performance"
+            href="./dashboard?section=partner-performance"
           />
 
           {/* Client Lifetime Value */}
@@ -283,7 +283,7 @@ export default function DashboardHub() {
             status="Upsell ready"
             footer="Your most profitable clients."
             visual={<MiniBars />}
-            href="/dashboard?section=client-lifetime-value"
+            href="./dashboard?section=client-lifetime-value"
           />
 
           {/* Predictive Analytics Card spanning full width */}
