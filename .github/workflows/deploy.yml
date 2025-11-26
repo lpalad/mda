@@ -35,10 +35,11 @@ jobs:
       - name: Upload to S3
         run: |
           # Sync ALL files first (this handles images, fonts, etc.)
-          aws s3 sync ./out s3://${{ secrets.AWS_S3_BUCKET }}/analytics --delete
+          # out/analytics folder contents go to S3 root, so /analytics routes work correctly
+          aws s3 sync ./out/analytics s3://${{ secrets.AWS_S3_BUCKET }}/ --delete
 
           # Fix content-types for CSS files (including nested _next folders)
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/ s3://${{ secrets.AWS_S3_BUCKET }}/ \
             --recursive \
             --exclude "*" \
             --include "*.css" \
@@ -46,7 +47,7 @@ jobs:
             --metadata-directive REPLACE
 
           # Fix content-types for JS files (including nested _next folders)
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/ s3://${{ secrets.AWS_S3_BUCKET }}/ \
             --recursive \
             --exclude "*" \
             --include "*.js" \
@@ -54,7 +55,7 @@ jobs:
             --metadata-directive REPLACE
 
           # Fix content-types for HTML files
-          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/analytics s3://${{ secrets.AWS_S3_BUCKET }}/analytics \
+          aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/ s3://${{ secrets.AWS_S3_BUCKET }}/ \
             --recursive \
             --exclude "*" \
             --include "*.html" \
