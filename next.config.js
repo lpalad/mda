@@ -3,7 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'export',
   basePath: '/analytics',
-  assetPrefix: '/analytics',
   trailingSlash: true,
 };
 
