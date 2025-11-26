@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { ArrowRight, TrendingUp, Users, Target, Zap, PieChart } from 'lucide-react'
 
 // Helper Components
@@ -92,7 +93,7 @@ const SectionCard = ({
   visual: React.ReactNode
   href: string
 }) => (
-  <a href={href} className="group block h-full">
+  <Link href={href} className="group block h-full">
     <div className="flex h-full flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg ring-1 ring-slate-100">
       <div>
         <div className="mb-4 flex flex-row items-start justify-between">
@@ -118,11 +119,11 @@ const SectionCard = ({
         </span>
       </div>
     </div>
-  </a>
+  </Link>
 )
 
 const PredictiveCard = () => (
-  <a href="/marketing-roi" className="group block col-span-1 mt-4 sm:col-span-3">
+  <Link href="/marketing-roi" className="group block col-span-1 mt-4 sm:col-span-3">
     <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900 p-6 text-slate-50 shadow-lg ring-1 ring-slate-800 transition-all duration-200 group-hover:-translate-y-1 group-hover:border-slate-700 group-hover:shadow-xl">
       <div>
         <div className="mb-6 flex items-start justify-between">
@@ -197,7 +198,7 @@ const PredictiveCard = () => (
         </p>
       </div>
     </div>
-  </a>
+  </Link>
 )
 
 export default function DashboardHub() {
