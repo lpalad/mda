@@ -285,8 +285,8 @@ export function MarketingROI() {
         </p>
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Revenue Intelligence Hub</h1>
-            <p className="text-slate-600 mt-2">Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Marketing ROI</h1>
+            <p className="text-slate-600 mt-2">Attribution model across all paid & owned channels.</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100">
             <PieChart size={18} className="text-slate-600" />

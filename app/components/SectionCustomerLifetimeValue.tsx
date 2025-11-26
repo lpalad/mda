@@ -186,8 +186,8 @@ export function CustomerLifetimeValue(_: CustomerLifetimeValueProps) {
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
           Business Intelligence Platform | Leonard Palad - Principle Business Analyst
         </p>
-        <h1 className="text-3xl font-bold text-slate-900">Revenue Intelligence Hub</h1>
-        <p className="text-slate-600 mt-1">Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.</p>
+        <h1 className="text-3xl font-bold text-slate-900">Client Lifetime Value</h1>
+        <p className="text-slate-600 mt-1">Average CLV by segment (SMB, Mid, Enterprise).</p>
 
         {/* Period Filter */}
         <div className="mt-4 flex items-center gap-3">
