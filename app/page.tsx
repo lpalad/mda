@@ -122,7 +122,7 @@ const SectionCard = ({
 )
 
 const PredictiveCard = () => (
-  <a href="/dashboard?section=predictive-analytics" className="group block col-span-1 mt-4 sm:col-span-3">
+  <a href="./dashboard?section=predictive-analytics" className="group block col-span-1 mt-4 sm:col-span-3">
     <div className="grid gap-6 rounded-3xl border border-slate-800 bg-slate-900 p-6 text-slate-50 shadow-lg ring-1 ring-slate-800 transition-all duration-200 group-hover:-translate-y-1 group-hover:border-slate-700 group-hover:shadow-xl">
       <div>
         <div className="mb-6 flex items-start justify-between">
