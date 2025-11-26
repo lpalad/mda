@@ -1,15 +1,15 @@
 # Nginx Configuration for Dashboard SPA Routing
 
-The dashboard is a Single Page Application (SPA) that uses client-side routing. When users navigate to `/dashboard/sales-pipeline`, `/dashboard/lead-quality`, etc., nginx needs to know to serve the main `/dashboard/index.html` file so the JavaScript app can handle the routing.
+The dashboard is a Single Page Application (SPA) that uses client-side routing. When users navigate to `/analytics/sales-pipeline`, `/analytics/lead-quality`, etc., nginx needs to know to serve the main `/analytics/index.html` file so the JavaScript app can handle the routing.
 
 ## Required Nginx Configuration
 
 Add this to your nginx configuration for the `salesconnect.com.au` server block:
 
 ```nginx
-location /dashboard/ {
+location /analytics/ {
     # Serve static files and folders directly if they exist
-    try_files $uri $uri/ /dashboard/index.html;
+    try_files $uri $uri/ /analytics/index.html;
 }
 ```
 
@@ -32,8 +32,8 @@ server {
     # ... other configuration ...
 
     # SPA Routing for Dashboard
-    location /dashboard/ {
-        try_files $uri $uri/ /dashboard/index.html;
+    location /analytics/ {
+        try_files $uri $uri/ /analytics/index.html;
     }
 
     # ... other location blocks ...
@@ -42,10 +42,10 @@ server {
 
 ## How It Works
 
-1. When a request comes to `/dashboard/sales-pipeline`
+1. When a request comes to `/analytics/sales-pipeline`
 2. Nginx checks if that file exists (`$uri`)
 3. If not, it checks if it's a directory (`$uri/`)
-4. If neither exist, it serves `/dashboard/index.html`
+4. If neither exist, it serves `/analytics/index.html`
 5. The Next.js app running in the browser receives the HTML and determines what to display based on the URL
 
 ## After Applying Configuration

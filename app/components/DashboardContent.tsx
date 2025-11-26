@@ -47,7 +47,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
               return (
                 <Link
                   key={section.id}
-                  href={`/dashboard?section=${section.id}`}
+                  href={`/analytics?section=${section.id}`}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
                       ? 'bg-primary/10 text-primary border-l-2 border-primary'
