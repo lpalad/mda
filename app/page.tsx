@@ -207,13 +207,13 @@ export default function DashboardHub() {
         {/* Header */}
         <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Business Intelligence Platform By Leonard Palad | Principle Business Analyst
+            Business Intelligence Platform | Leonard Palad - Principle Business Analyst
           </p>
           <h1 className="text-4xl font-bold">
-            Revenue Intelligence Hub
+            Lead Quality Analytics
           </h1>
           <p className="max-w-2xl text-sm text-slate-600">
-            Seven decision views designed for CMOs and RevOps leaders to see ROI, pipeline and risk in one place.
+            B2B Law Firm - Marketing Performance Dashboard
           </p>
         </div>
 
