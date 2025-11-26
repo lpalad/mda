@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { Header } from '@/app/components/Header'
 import { DashboardContent } from '@/app/components/DashboardContent'
 import { generateMockLeads } from '@/app/lib/generateData'
 import { useFilterStore, getDateRangeFromPeriod, filterLeadsByDateRange } from '@/app/lib/store'
@@ -40,8 +39,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <Header />
-
       <Suspense fallback={<div>Loading...</div>}>
         <DashboardContent filteredLeads={filteredLeads} />
       </Suspense>

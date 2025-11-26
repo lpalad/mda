@@ -23,17 +23,17 @@ const PERIOD_MULTIPLIERS: Record<string, number> = {
 // ===== DATA =====
 
 const baseCustomers = [
-  { name: 'Visionary Enterprises', revenue: 21000 },
-  { name: 'Swift Enterprises', revenue: 19047 },
-  { name: 'United Solutions', revenue: 18121 },
-  { name: 'Titan Enterprises', revenue: 17743 },
-  { name: 'Fusion Systems', revenue: 16751 },
-  { name: 'Alpha Corporation', revenue: 12440 },
+  { name: 'Visionary Enterprises', revenue: 210000 },
+  { name: 'Swift Enterprises', revenue: 190470 },
+  { name: 'United Solutions', revenue: 181210 },
+  { name: 'Titan Enterprises', revenue: 177430 },
+  { name: 'Fusion Systems', revenue: 167510 },
+  { name: 'Alpha Corporation', revenue: 124400 },
 ]
 
 const baseMetrics = {
-  numCustomers: 6,
-  numProductsSold: 122,
+  numCustomers: 60,
+  numProductsSold: 1220,
 }
 
 // ===== HELPER COMPONENTS =====
