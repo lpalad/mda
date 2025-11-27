@@ -6,12 +6,12 @@ import { LeadQualityAnalytics } from '@/app/components/LeadQualityAnalytics'
 import { MarketingROI } from '@/app/components/SectionMarketing-ROI'
 import { PartnerPerformance } from '@/app/components/SectionPartnerPerformance'
 import { SalesPipeline } from '@/app/components/SectionSalesPipeline'
-import { CustomerLifetimeValue } from '@/app/components/SectionCustomerLifetimeValue'
+import { CLVDashboard } from '@/app/components/CLVDashboard'
 import { Lead } from '@/app/types/lead'
-import { TrendingUp, Search, Zap, Users, Gem, Home } from 'lucide-react'
+import { TrendingUp, Search, Zap, Users, BarChart3, Home } from 'lucide-react'
 
 const sidebarSections = [
-  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem, href: '/client-lifetime-value' },
+  { id: 'clv-segmentation', label: 'CLV & Segmentation', icon: BarChart3, href: '/clv-segmentation' },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
   { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
   { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },
@@ -84,13 +84,13 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
           {/* Sales Pipeline Section */}
           {currentSection === 'sales-pipeline' && <SalesPipeline />}
 
-          {/* Customer Lifetime Value Section */}
-          {currentSection === 'client-lifetime-value' && (
-            <CustomerLifetimeValue leads={filteredLeads} />
+          {/* CLV & Segmentation Section */}
+          {currentSection === 'clv-segmentation' && (
+            <CLVDashboard />
           )}
 
           {/* Placeholder for other sections */}
-          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && currentSection !== 'partner-performance' && currentSection !== 'sales-pipeline' && currentSection !== 'client-lifetime-value' && (
+          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && currentSection !== 'partner-performance' && currentSection !== 'sales-pipeline' && currentSection !== 'clv-segmentation' && (
             <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">
                 {sidebarSections.find((s) => s.id === currentSection)?.label}

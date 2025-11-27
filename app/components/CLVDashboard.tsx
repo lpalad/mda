@@ -709,7 +709,7 @@ export function CLVDashboard() {
                 contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB' }}
               />
               <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} name="Customers">
-                {clvDistribution.map((entry, index) => (
+                {clvDistribution.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={index >= 4 ? '#10B981' : '#3B82F6'} />
                 ))}
               </Bar>
