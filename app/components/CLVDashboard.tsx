@@ -505,6 +505,9 @@ export function CLVDashboard() {
         </select>
       </div>
 
+      {/* Executive Summary Bar */}
+      <CLVExecutiveSummaryBar />
+
       {/* TOP ROW: KPI Cards */}
       <div className="grid grid-cols-5 gap-4 mb-6">
         <KPICard
