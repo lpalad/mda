@@ -6,6 +6,7 @@ import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
+import { CircleDot, Database, Lightbulb, RefreshCw, TrendingUp } from 'lucide-react'
 import {
   getQualityScoreDistribution, getLeadSegmentation, getSourceVsQuality,
   getFeatureImportance, getFunnelByQuality, getQualityHeatmap, getQualityTrendLine,
@@ -221,6 +222,87 @@ const PERIOD_OPTIONS = [
   { value: 'all-time', label: 'All Time' },
 ]
 
+// Executive Summary Card Data for Lead Quality Analytics
+interface LeadQualitySummaryCardData {
+  icon: React.ElementType
+  number: string
+  title: string
+  description: string
+  highlight?: string
+}
+
+const leadQualityExecutiveSummaryCards: LeadQualitySummaryCardData[] = [
+  {
+    icon: CircleDot,
+    number: '01',
+    title: 'PROBLEM',
+    description: '68% of leads never convert. Sales team wastes 40% of time on low-quality prospects. Need predictive scoring.'
+  },
+  {
+    icon: Database,
+    number: '02',
+    title: 'DATA USED',
+    description: 'CRM lead data, engagement signals, firmographics. 1,200+ leads across 6 channels, 12-month analysis.'
+  },
+  {
+    icon: Lightbulb,
+    number: '03',
+    title: 'KEY FINDING',
+    description: 'Referral leads convert at 3.2x rate vs paid. Engagement score + company size = 78% prediction accuracy.',
+    highlight: 'Top 30% leads = 72% revenue'
+  },
+  {
+    icon: RefreshCw,
+    number: '04',
+    title: 'RECOMMENDATION',
+    description: 'Implement ML scoring model. Auto-route high-quality leads to senior reps. Nurture medium-quality via email.'
+  },
+  {
+    icon: TrendingUp,
+    number: '05',
+    title: 'EXPECTED IMPACT',
+    description: 'Projected +35% qualified pipeline. Sales efficiency up 40%. Win rate improves from 18% → 28%.',
+    highlight: '+56% win rate improvement'
+  }
+]
+
+// Executive Summary Card Component for Lead Quality
+const LeadQualityExecutiveSummaryCard = ({ card }: { card: LeadQualitySummaryCardData }) => {
+  const Icon = card.icon
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50">
+          <Icon className="h-5 w-5 text-teal-500" />
+        </div>
+        <span className="text-sm font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+          {card.number}
+        </span>
+      </div>
+      <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900 mt-3">
+        {card.title}
+      </h3>
+      <p className="text-xs text-gray-500 leading-relaxed mt-2 flex-1">
+        {card.description}
+      </p>
+      {card.highlight && (
+        <p className="text-xs font-semibold text-teal-600 mt-2">
+          {card.highlight}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// Executive Summary Bar Component for Lead Quality
+const LeadQualityExecutiveSummaryBar = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    {leadQualityExecutiveSummaryCards.map((card) => (
+      <LeadQualityExecutiveSummaryCard key={card.number} card={card} />
+    ))}
+  </div>
+)
+
 export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('last-30')
 
@@ -336,6 +418,9 @@ export function LeadQualityAnalytics({ leads }: LeadQualityAnalyticsProps) {
           ))}
         </div>
       </div>
+
+      {/* Executive Summary Bar */}
+      <LeadQualityExecutiveSummaryBar />
 
       {/* KPI CARDS + DONUT CHART (Top Section) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-stagger-container">
