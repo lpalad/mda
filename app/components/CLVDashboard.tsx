@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { BarChart, Bar, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, Area, AreaChart } from 'recharts'
-import { TrendingUp, TrendingDown, Users, DollarSign, Target, AlertTriangle } from 'lucide-react'
+import { TrendingUp, TrendingDown, Users, DollarSign, Target, AlertTriangle, Database, Lightbulb, RefreshCw } from 'lucide-react'
 
 // Period multipliers for dynamic data
 const periodMultipliers: Record<string, { revenue: number; customers: number; growth: number; churn: number }> = {
@@ -41,6 +41,87 @@ const channelSegmentMultipliers: Record<string, Record<string, number>> = {
   'Google Ads': { Champions: 0.7, Loyal: 0.8, Potential: 1.2, 'At Risk': 1.3, New: 1.4 },
   'Meta': { Champions: 0.6, Loyal: 0.7, Potential: 1.3, 'At Risk': 1.4, New: 1.5 },
 }
+
+// Executive Summary Card Data for CLV Dashboard
+interface CLVSummaryCardData {
+  icon: React.ElementType
+  number: string
+  title: string
+  description: string
+  highlight?: string
+}
+
+const clvExecutiveSummaryCards: CLVSummaryCardData[] = [
+  {
+    icon: Users,
+    number: '01',
+    title: 'PROBLEM',
+    description: '70% of revenue from just 32% of customers. High churn in mid-tier segments bleeding $1.2M ARR.'
+  },
+  {
+    icon: Database,
+    number: '02',
+    title: 'DATA USED',
+    description: 'CRM transactions, RFM scoring, cohort retention. 2,500 customers across 5 segments, 24-month analysis.'
+  },
+  {
+    icon: Lightbulb,
+    number: '03',
+    title: 'KEY FINDING',
+    description: 'Champions: 6.8x LTV:CAC at 3.2% churn. "At Risk" segment: 32% churn rate destroying 1.2x LTV:CAC ratio.',
+    highlight: 'Champions + Loyal = 70% revenue'
+  },
+  {
+    icon: RefreshCw,
+    number: '04',
+    title: 'RECOMMENDATION',
+    description: 'Activate win-back for 398 "At Risk" customers. Upsell 634 "Potential" via loyalty program. Reduce paid CAC.'
+  },
+  {
+    icon: TrendingUp,
+    number: '05',
+    title: 'EXPECTED IMPACT',
+    description: 'Target: LTV:CAC from 3.8x → 4.5x. Churn reduction 18% → 12% across portfolio.',
+    highlight: '+18% LTV:CAC improvement'
+  }
+]
+
+// Executive Summary Card Component for CLV
+const CLVExecutiveSummaryCard = ({ card }: { card: CLVSummaryCardData }) => {
+  const Icon = card.icon
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50">
+          <Icon className="h-5 w-5 text-teal-500" />
+        </div>
+        <span className="text-sm font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+          {card.number}
+        </span>
+      </div>
+      <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900 mt-3">
+        {card.title}
+      </h3>
+      <p className="text-xs text-gray-500 leading-relaxed mt-2 flex-1">
+        {card.description}
+      </p>
+      {card.highlight && (
+        <p className="text-xs font-semibold text-teal-600 mt-2">
+          {card.highlight}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// Executive Summary Bar Component for CLV
+const CLVExecutiveSummaryBar = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    {clvExecutiveSummaryCards.map((card) => (
+      <CLVExecutiveSummaryCard key={card.number} card={card} />
+    ))}
+  </div>
+)
 
 // Base data that will be multiplied by period/region
 const baseSegmentData = [
