@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, TrendingUp, Search, Zap, Users, Gem } from 'lucide-react'
+import { Home, TrendingUp, Search, Zap, Users, BarChart3 } from 'lucide-react'
 
 interface DashboardNavProps {
   currentSection: string
 }
 
 const sections = [
-  { id: 'client-lifetime-value', label: 'Client Lifetime Value', icon: Gem, href: '/client-lifetime-value' },
+  { id: 'clv-segmentation', label: 'CLV & Segmentation', icon: BarChart3, href: '/clv-segmentation' },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
   { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
   { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },

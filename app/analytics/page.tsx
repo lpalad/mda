@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, Users, Target, Zap, PieChart } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Target, Zap, BarChart3 } from 'lucide-react'
 
 // Branding Header Component
 const BrandingHeader = () => {
@@ -101,6 +101,31 @@ const MiniDonut = () => (
         <span className="mr-1 inline-block h-2 w-2 rounded-full bg-slate-300" />
         Working / Disqualified
       </p>
+    </div>
+  </div>
+)
+
+const MiniSegments = () => (
+  <div className="mt-3 flex h-10 items-end gap-1">
+    <div className="flex flex-col gap-0.5 flex-1">
+      <div className="h-3 rounded-sm bg-emerald-500/80" />
+      <div className="h-2 rounded-sm bg-blue-500/80" />
+      <div className="h-1.5 rounded-sm bg-violet-500/80" />
+    </div>
+    <div className="flex flex-col gap-0.5 flex-1">
+      <div className="h-2.5 rounded-sm bg-emerald-500/80" />
+      <div className="h-2.5 rounded-sm bg-blue-500/80" />
+      <div className="h-2 rounded-sm bg-violet-500/80" />
+    </div>
+    <div className="flex flex-col gap-0.5 flex-1">
+      <div className="h-3.5 rounded-sm bg-emerald-500/80" />
+      <div className="h-2 rounded-sm bg-blue-500/80" />
+      <div className="h-1 rounded-sm bg-violet-500/80" />
+    </div>
+    <div className="flex flex-col gap-0.5 flex-1">
+      <div className="h-4 rounded-sm bg-emerald-500/80" />
+      <div className="h-1.5 rounded-sm bg-blue-500/80" />
+      <div className="h-1.5 rounded-sm bg-violet-500/80" />
     </div>
   </div>
 )
@@ -306,16 +331,16 @@ export default function DashboardHub() {
             href="/partner-performance"
           />
 
-          {/* Client Lifetime Value */}
+          {/* CLV & Segmentation */}
           <SectionCard
-            icon={PieChart}
-            title="Client Lifetime Value"
-            kpi="$46.2k"
-            subtitle="Average CLV by segment (SMB, Mid, Enterprise)."
-            status="Upsell ready"
-            footer="Your most profitable clients."
-            visual={<MiniBars />}
-            href="/client-lifetime-value"
+            icon={BarChart3}
+            title="CLV & Segmentation"
+            kpi="$12.4M"
+            subtitle="Customer segments by RFM analysis & lifetime value."
+            status="3.8x LTV:CAC"
+            footer="Know your best customers."
+            visual={<MiniSegments />}
+            href="/clv-segmentation"
           />
 
           {/* Predictive Analytics Card spanning full width */}
