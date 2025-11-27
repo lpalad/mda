@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, ScatterChart, Scatter, Cell, ComposedChart,
@@ -11,7 +11,9 @@ import {
   Database, Lightbulb, RefreshCw, CircleDot
 } from 'lucide-react'
 
-// ==================== DATA ====================
+// ==================== TYPES ====================
+
+type Period = '30d' | '90d' | '6m' | '12m'
 
 interface SummaryCardData {
   icon: React.ElementType
@@ -21,42 +23,49 @@ interface SummaryCardData {
   highlight?: string
 }
 
-const executiveSummaryCards: SummaryCardData[] = [
-  {
-    icon: CircleDot,
-    number: '01',
-    title: 'PROBLEM',
-    description: '$328K marketing spend across 6 channels but unclear which drive real ROI. Where to cut vs scale?'
-  },
-  {
-    icon: Database,
-    number: '02',
-    title: 'DATA USED',
-    description: 'Google Ads, Meta, LinkedIn, SEO tools, CRM revenue data. $328K spend, $993K revenue, 90 days.'
-  },
-  {
-    icon: Lightbulb,
-    number: '03',
-    title: 'KEY FINDING',
-    description: 'Referrals: 6.0x ROAS, 10x LTV:CAC. Display: 1.2x ROAS (burning $40K). Top 2 channels 5x more efficient.',
-    highlight: 'Referrals = 7x better than Display'
-  },
-  {
-    icon: RefreshCw,
-    number: '04',
-    title: 'RECOMMENDATION',
-    description: 'Cut Display spend by 50% ($20K). Reinvest into Referrals & SEO. Scale retargeting campaigns +40%.'
-  },
-  {
-    icon: TrendingUp,
-    number: '05',
-    title: 'EXPECTED IMPACT',
-    description: 'Projected +$85K revenue/quarter. Blended ROAS improves from 3.0x → 3.8x. CAC drops $370 → $310.',
-    highlight: '−16% CAC improvement'
-  }
-]
+interface ChannelDataType {
+  channel: string
+  spend: number
+  revenue: number
+  roas: number
+  cac: number
+  ltvCac: number
+}
 
-const channelData = [
+interface ScatterDataType {
+  name: string
+  spend: number
+  revenue: number
+  roas: number
+  conversions: number
+}
+
+interface TrendDataType {
+  month: string
+  spend: number
+  revenue: number
+  roas: number
+}
+
+// ==================== PERIOD MULTIPLIERS ====================
+
+const periodMultipliers: Record<Period, { spend: number; revenue: number; roas: number; cac: number; payback: number; trend: string }> = {
+  '30d': { spend: 0.33, revenue: 0.30, roas: 0.92, cac: 1.08, payback: 1.15, trend: '-2.1%' },
+  '90d': { spend: 1.0, revenue: 1.0, roas: 1.0, cac: 1.0, payback: 1.0, trend: '+12.4%' },
+  '6m': { spend: 2.1, revenue: 2.3, roas: 1.08, cac: 0.92, payback: 0.88, trend: '+18.7%' },
+  '12m': { spend: 4.2, revenue: 4.8, roas: 1.15, cac: 0.85, payback: 0.75, trend: '+24.3%' }
+}
+
+const periodLabels: Record<Period, string> = {
+  '30d': 'Last 30 Days',
+  '90d': 'Last 90 Days',
+  '6m': 'Last 6 Months',
+  '12m': 'Last 12 Months'
+}
+
+// ==================== BASE DATA ====================
+
+const baseChannelData: ChannelDataType[] = [
   { channel: 'Referrals', spend: 28000, revenue: 168000, roas: 6.0, cac: 185, ltvCac: 10.0 },
   { channel: 'SEO', spend: 35000, revenue: 158000, roas: 4.5, cac: 220, ltvCac: 7.5 },
   { channel: 'Google Ads', spend: 85000, revenue: 272000, roas: 3.2, cac: 380, ltvCac: 3.7 },
@@ -65,7 +74,7 @@ const channelData = [
   { channel: 'Display', spend: 41000, revenue: 49000, roas: 1.2, cac: 680, ltvCac: 1.4 }
 ]
 
-const scatterData = [
+const baseScatterData: ScatterDataType[] = [
   { name: 'Brand Search', spend: 12, revenue: 54, roas: 4.5, conversions: 45 },
   { name: 'Competitor KW', spend: 28, revenue: 84, roas: 3.0, conversions: 72 },
   { name: 'Retargeting', spend: 8.5, revenue: 42.5, roas: 5.0, conversions: 38 },
@@ -80,7 +89,7 @@ const scatterData = [
   { name: 'Influencer', spend: 18, revenue: 32.4, roas: 1.8, conversions: 30 }
 ]
 
-const trendData = [
+const baseTrendData: TrendDataType[] = [
   { month: 'Jan', spend: 52, revenue: 146, roas: 2.8 },
   { month: 'Feb', spend: 58, revenue: 168, roas: 2.9 },
   { month: 'Mar', spend: 62, revenue: 192, roas: 3.1 },
@@ -90,7 +99,9 @@ const trendData = [
   { month: 'Jul', spend: 82, revenue: 279, roas: 3.4 },
   { month: 'Aug', spend: 85, revenue: 298, roas: 3.5 },
   { month: 'Sep', spend: 88, revenue: 290, roas: 3.3 },
-  { month: 'Oct', spend: 92, revenue: 313, roas: 3.4 }
+  { month: 'Oct', spend: 92, revenue: 313, roas: 3.4 },
+  { month: 'Nov', spend: 95, revenue: 328, roas: 3.5 },
+  { month: 'Dec', spend: 98, revenue: 343, roas: 3.5 }
 ]
 
 const recommendations = [
@@ -101,113 +112,18 @@ const recommendations = [
   { impact: 'MONITOR', color: 'slate', text: 'LinkedIn CAC trending up 8% MoM — review audience targeting before next budget cycle.' }
 ]
 
-// ==================== COMPONENTS ====================
+// ==================== HELPER FUNCTIONS ====================
 
-// Executive Summary Card Component
-const ExecutiveSummaryCard = ({ card }: { card: SummaryCardData }) => {
-  const Icon = card.icon
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
-      {/* Top Row: Icon + Step Number */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50">
-          <Icon className="h-5 w-5 text-teal-500" />
-        </div>
-        <span className="text-sm font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
-          {card.number}
-        </span>
-      </div>
-
-      {/* Title */}
-      <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900 mt-3">
-        {card.title}
-      </h3>
-
-      {/* Description */}
-      <p className="text-xs text-gray-500 leading-relaxed mt-2 flex-1">
-        {card.description}
-      </p>
-
-      {/* Highlight (optional) */}
-      {card.highlight && (
-        <p className="text-xs font-semibold text-teal-600 mt-2">
-          {card.highlight}
-        </p>
-      )}
-    </div>
-  )
+const formatCurrency = (value: number) => {
+  if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
+  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
+  return `$${value.toFixed(0)}`
 }
 
-// Executive Summary Bar Component
-const ExecutiveSummaryBar = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-    {executiveSummaryCards.map((card) => (
-      <ExecutiveSummaryCard key={card.number} card={card} />
-    ))}
-  </div>
-)
-
-// Large KPI Card (for Total Spend and Attributed Revenue)
-const LargeKPICard = ({
-  label,
-  value,
-  trend,
-  trendUp,
-  subtext
-}: {
-  label: string
-  value: string
-  trend: string
-  trendUp: boolean
-  subtext: string
-}) => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-    <div className="flex items-center justify-between mb-2">
-      <span className="uppercase text-xs text-gray-500 font-medium tracking-wide">{label}</span>
-      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${
-        trendUp
-          ? 'bg-teal-50 text-teal-600 border-teal-200'
-          : 'bg-rose-50 text-rose-600 border-rose-200'
-      }`}>
-        <TrendingUp className="w-3.5 h-3.5" />
-        {trend}
-      </span>
-    </div>
-    <div className="text-3xl font-bold text-gray-900">{value}</div>
-    <div className="text-xs text-gray-400 mt-1">{subtext}</div>
-  </div>
-)
-
-// Small KPI Card (for ROAS, CAC, Payback Period)
-const SmallKPICard = ({
-  label,
-  value,
-  trend,
-  trendUp,
-  subtext
-}: {
-  label: string
-  value: string
-  trend: string
-  trendUp: boolean
-  subtext: string
-}) => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-    <div className="flex items-center justify-between mb-2">
-      <span className="uppercase text-xs text-gray-500 font-medium tracking-wide">{label}</span>
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
-        trendUp
-          ? 'bg-teal-50 text-teal-600 border-teal-200'
-          : 'bg-rose-50 text-rose-600 border-rose-200'
-      }`}>
-        <TrendingUp className="w-3 h-3" />
-        {trend}
-      </span>
-    </div>
-    <div className="text-2xl font-bold text-gray-900">{value}</div>
-    <div className="text-xs text-gray-400 mt-1">{subtext}</div>
-  </div>
-)
+const formatCurrencyShort = (value: number) => {
+  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
+  return `$${value}`
+}
 
 const getROASColor = (roas: number) => {
   if (roas >= 3) return 'text-emerald-600'
@@ -233,10 +149,94 @@ const getScatterColor = (roas: number) => {
   return '#f43f5e'
 }
 
-const formatCurrency = (value: number) => {
-  if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
-  return `$${value}`
+// ==================== COMPONENTS ====================
+
+const ExecutiveSummaryCard = ({ card }: { card: SummaryCardData }) => {
+  const Icon = card.icon
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50">
+          <Icon className="h-5 w-5 text-teal-500" />
+        </div>
+        <span className="text-sm font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+          {card.number}
+        </span>
+      </div>
+      <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900 mt-3">
+        {card.title}
+      </h3>
+      <p className="text-xs text-gray-500 leading-relaxed mt-2 flex-1">
+        {card.description}
+      </p>
+      {card.highlight && (
+        <p className="text-xs font-semibold text-teal-600 mt-2">
+          {card.highlight}
+        </p>
+      )}
+    </div>
+  )
 }
+
+const LargeKPICard = ({
+  label,
+  value,
+  trend,
+  trendUp,
+  subtext
+}: {
+  label: string
+  value: string
+  trend: string
+  trendUp: boolean
+  subtext: string
+}) => (
+  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+    <div className="flex items-center justify-between mb-2">
+      <span className="uppercase text-xs text-gray-500 font-medium tracking-wide">{label}</span>
+      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${
+        trendUp
+          ? 'bg-teal-50 text-teal-600 border-teal-200'
+          : 'bg-rose-50 text-rose-600 border-rose-200'
+      }`}>
+        <TrendingUp className={`w-3.5 h-3.5 ${!trendUp ? 'rotate-180' : ''}`} />
+        {trend}
+      </span>
+    </div>
+    <div className="text-3xl font-bold text-gray-900">{value}</div>
+    <div className="text-xs text-gray-400 mt-1">{subtext}</div>
+  </div>
+)
+
+const SmallKPICard = ({
+  label,
+  value,
+  trend,
+  trendUp,
+  subtext
+}: {
+  label: string
+  value: string
+  trend: string
+  trendUp: boolean
+  subtext: string
+}) => (
+  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+    <div className="flex items-center justify-between mb-2">
+      <span className="uppercase text-xs text-gray-500 font-medium tracking-wide">{label}</span>
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
+        trendUp
+          ? 'bg-teal-50 text-teal-600 border-teal-200'
+          : 'bg-rose-50 text-rose-600 border-rose-200'
+      }`}>
+        <TrendingUp className={`w-3 h-3 ${!trendUp ? 'rotate-180' : ''}`} />
+        {trend}
+      </span>
+    </div>
+    <div className="text-2xl font-bold text-gray-900">{value}</div>
+    <div className="text-xs text-gray-400 mt-1">{subtext}</div>
+  </div>
+)
 
 const ImpactPill = ({ impact, color }: { impact: string; color: string }) => {
   const colorClasses: Record<string, string> = {
@@ -252,32 +252,137 @@ const ImpactPill = ({ impact, color }: { impact: string; color: string }) => {
   )
 }
 
-// Custom tooltip for scatter chart
-const ScatterTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: typeof scatterData[0] }> }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload
-    return (
-      <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
-        <p className="text-gray-900 font-medium text-sm mb-1">{data.name}</p>
-        <p className="text-gray-600 text-xs">Spend: ${data.spend}K</p>
-        <p className="text-gray-600 text-xs">Revenue: ${data.revenue}K</p>
-        <p className="text-gray-600 text-xs">ROAS: {data.roas}x</p>
-      </div>
-    )
-  }
-  return null
-}
-
 // ==================== MAIN COMPONENT ====================
 
 export function MarketingROIDashboard() {
   const [metric, setMetric] = useState<'roas' | 'ltvCac'>('roas')
-  const [period, setPeriod] = useState('90d')
+  const [period, setPeriod] = useState<Period>('90d')
+
+  // Get period multiplier
+  const multiplier = useMemo(() => periodMultipliers[period], [period])
+
+  // Dynamic Executive Summary Cards based on period
+  const executiveSummaryCards: SummaryCardData[] = useMemo(() => {
+    const totalSpend = Math.round(329000 * multiplier.spend)
+    const totalRevenue = Math.round(993000 * multiplier.revenue)
+    const roasValue = (3.0 * multiplier.roas).toFixed(1)
+    const cacValue = Math.round(370 * multiplier.cac)
+    const projectedImpact = Math.round(85 * multiplier.revenue)
+
+    return [
+      {
+        icon: CircleDot,
+        number: '01',
+        title: 'PROBLEM',
+        description: `${formatCurrency(totalSpend)} marketing spend across 6 channels but unclear which drive real ROI. Where to cut vs scale?`
+      },
+      {
+        icon: Database,
+        number: '02',
+        title: 'DATA USED',
+        description: `Google Ads, Meta, LinkedIn, SEO tools, CRM revenue data. ${formatCurrency(totalSpend)} spend, ${formatCurrency(totalRevenue)} revenue, ${periodLabels[period].toLowerCase()}.`
+      },
+      {
+        icon: Lightbulb,
+        number: '03',
+        title: 'KEY FINDING',
+        description: `Referrals: ${(6.0 * multiplier.roas).toFixed(1)}x ROAS, ${(10.0 * multiplier.roas).toFixed(0)}x LTV:CAC. Display: ${(1.2 * multiplier.roas).toFixed(1)}x ROAS (burning ${formatCurrency(41000 * multiplier.spend)}). Top 2 channels 5x more efficient.`,
+        highlight: 'Referrals = 7x better than Display'
+      },
+      {
+        icon: RefreshCw,
+        number: '04',
+        title: 'RECOMMENDATION',
+        description: `Cut Display spend by 50% (${formatCurrency(20000 * multiplier.spend)}). Reinvest into Referrals & SEO. Scale retargeting campaigns +40%.`
+      },
+      {
+        icon: TrendingUp,
+        number: '05',
+        title: 'EXPECTED IMPACT',
+        description: `Projected +${formatCurrency(projectedImpact * 1000)}/quarter. Blended ROAS improves from ${roasValue}x → ${(parseFloat(roasValue) * 1.27).toFixed(1)}x. CAC drops $${cacValue} → $${Math.round(cacValue * 0.84)}.`,
+        highlight: '−16% CAC improvement'
+      }
+    ]
+  }, [multiplier, period])
+
+  // Dynamic KPI values based on period
+  const kpiValues = useMemo(() => {
+    const baseSpend = 329000
+    const baseRevenue = 993000
+    const baseRoas = 3.0
+    const baseCac = 370
+    const basePayback = 4.2
+
+    return {
+      totalSpend: Math.round(baseSpend * multiplier.spend),
+      totalRevenue: Math.round(baseRevenue * multiplier.revenue),
+      roas: (baseRoas * multiplier.roas).toFixed(1),
+      cac: Math.round(baseCac * multiplier.cac),
+      payback: (basePayback * multiplier.payback).toFixed(1),
+      spendTrend: multiplier.trend,
+      revenueTrend: period === '30d' ? '-1.8%' : period === '90d' ? '+18.2%' : period === '6m' ? '+22.5%' : '+28.1%',
+      roasTrend: period === '30d' ? '-0.2x' : period === '90d' ? '+0.3x' : period === '6m' ? '+0.4x' : '+0.6x',
+      cacTrend: period === '30d' ? '+3.2%' : period === '90d' ? '-4.7%' : period === '6m' ? '-7.2%' : '-12.1%',
+      paybackTrend: period === '30d' ? '+0.2mo' : period === '90d' ? '-0.3mo' : period === '6m' ? '-0.5mo' : '-0.8mo'
+    }
+  }, [multiplier, period])
+
+  // Dynamic channel data based on period
+  const channelData = useMemo(() => {
+    return baseChannelData.map(channel => ({
+      ...channel,
+      spend: Math.round(channel.spend * multiplier.spend),
+      revenue: Math.round(channel.revenue * multiplier.revenue),
+      roas: parseFloat((channel.roas * multiplier.roas).toFixed(1)),
+      cac: Math.round(channel.cac * multiplier.cac),
+      ltvCac: parseFloat((channel.ltvCac * multiplier.roas).toFixed(1))
+    }))
+  }, [multiplier])
 
   // Sort channel data by selected metric
-  const sortedChannelData = [...channelData].sort((a, b) =>
-    metric === 'roas' ? b.roas - a.roas : b.ltvCac - a.ltvCac
-  )
+  const sortedChannelData = useMemo(() => {
+    return [...channelData].sort((a, b) =>
+      metric === 'roas' ? b.roas - a.roas : b.ltvCac - a.ltvCac
+    )
+  }, [channelData, metric])
+
+  // Dynamic scatter data based on period
+  const scatterData = useMemo(() => {
+    return baseScatterData.map(item => ({
+      ...item,
+      spend: parseFloat((item.spend * multiplier.spend).toFixed(1)),
+      revenue: parseFloat((item.revenue * multiplier.revenue).toFixed(1)),
+      roas: parseFloat((item.roas * multiplier.roas).toFixed(1)),
+      conversions: Math.round(item.conversions * multiplier.spend)
+    }))
+  }, [multiplier])
+
+  // Dynamic trend data based on period
+  const trendData = useMemo(() => {
+    const months = period === '30d' ? 1 : period === '90d' ? 3 : period === '6m' ? 6 : 12
+    return baseTrendData.slice(-months).map(item => ({
+      ...item,
+      spend: Math.round(item.spend * multiplier.spend / (period === '12m' ? 4 : period === '6m' ? 2 : 1)),
+      revenue: Math.round(item.revenue * multiplier.revenue / (period === '12m' ? 4 : period === '6m' ? 2 : 1)),
+      roas: parseFloat((item.roas * multiplier.roas).toFixed(1))
+    }))
+  }, [multiplier, period])
+
+  // Custom tooltip for scatter chart
+  const ScatterTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: ScatterDataType }> }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload
+      return (
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
+          <p className="text-gray-900 font-medium text-sm mb-1">{data.name}</p>
+          <p className="text-gray-600 text-xs">Spend: ${data.spend.toFixed(1)}K</p>
+          <p className="text-gray-600 text-xs">Revenue: ${data.revenue.toFixed(1)}K</p>
+          <p className="text-gray-600 text-xs">ROAS: {data.roas}x</p>
+        </div>
+      )
+    }
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -292,7 +397,7 @@ export function MarketingROIDashboard() {
             <div className="relative">
               <select
                 value={period}
-                onChange={(e) => setPeriod(e.target.value)}
+                onChange={(e) => setPeriod(e.target.value as Period)}
                 className="appearance-none bg-slate-800 text-white rounded-lg px-4 py-2.5 pr-10 text-sm font-medium cursor-pointer hover:bg-slate-700 transition-colors"
               >
                 <option value="30d">Last 30 Days</option>
@@ -310,24 +415,28 @@ export function MarketingROIDashboard() {
         </div>
 
         {/* ==================== SECTION 1: EXECUTIVE SUMMARY ==================== */}
-        <ExecutiveSummaryBar />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {executiveSummaryCards.map((card) => (
+            <ExecutiveSummaryCard key={card.number} card={card} />
+          ))}
+        </div>
 
         {/* ==================== SECTION 2: KPI CARDS ==================== */}
         {/* Row 1: Total Spend and Attributed Revenue (2 columns) */}
         <div className="grid grid-cols-2 gap-4 mt-6">
           <LargeKPICard
             label="TOTAL SPEND"
-            value="$329K"
-            trend="+12.4%"
-            trendUp={true}
-            subtext="vs last 90 days"
+            value={formatCurrency(kpiValues.totalSpend)}
+            trend={kpiValues.spendTrend}
+            trendUp={!kpiValues.spendTrend.startsWith('-')}
+            subtext={`vs previous ${periodLabels[period].toLowerCase()}`}
           />
           <LargeKPICard
             label="ATTRIBUTED REVENUE"
-            value="$993K"
-            trend="+18.2%"
-            trendUp={true}
-            subtext="vs last 90 days"
+            value={formatCurrency(kpiValues.totalRevenue)}
+            trend={kpiValues.revenueTrend}
+            trendUp={!kpiValues.revenueTrend.startsWith('-')}
+            subtext={`vs previous ${periodLabels[period].toLowerCase()}`}
           />
         </div>
 
@@ -335,16 +444,16 @@ export function MarketingROIDashboard() {
         <div className="grid grid-cols-2 gap-4 mt-4">
           <SmallKPICard
             label="ROAS"
-            value="3.0x"
-            trend="+0.3x"
-            trendUp={true}
+            value={`${kpiValues.roas}x`}
+            trend={kpiValues.roasTrend}
+            trendUp={!kpiValues.roasTrend.startsWith('-')}
             subtext="Target: 3.0x"
           />
           <SmallKPICard
             label="CAC"
-            value="$370"
-            trend="-4.7%"
-            trendUp={true}
+            value={`$${kpiValues.cac}`}
+            trend={kpiValues.cacTrend}
+            trendUp={kpiValues.cacTrend.startsWith('-')}
             subtext="Goal: < $450"
           />
         </div>
@@ -353,9 +462,9 @@ export function MarketingROIDashboard() {
         <div className="grid grid-cols-2 gap-4 mt-4">
           <SmallKPICard
             label="PAYBACK PERIOD"
-            value="4.2 mo"
-            trend="-0.3mo"
-            trendUp={true}
+            value={`${kpiValues.payback} mo`}
+            trend={kpiValues.paybackTrend}
+            trendUp={kpiValues.paybackTrend.startsWith('-')}
             subtext="Goal: < 6 months"
           />
         </div>
@@ -372,7 +481,7 @@ export function MarketingROIDashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-semibold text-gray-700">Channel Performance</h3>
-              <p className="text-xs text-gray-500">Sorted by {metric === 'roas' ? 'ROAS' : 'LTV:CAC'} (highest to lowest) · Last 90 days</p>
+              <p className="text-xs text-gray-500">Sorted by {metric === 'roas' ? 'ROAS' : 'LTV:CAC'} (highest to lowest) · {periodLabels[period]}</p>
             </div>
             <select
               value={metric}
@@ -440,8 +549,8 @@ export function MarketingROIDashboard() {
                       }`}
                     >
                       <td className="px-3 py-2.5 text-gray-900 font-medium">{row.channel}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{formatCurrency(row.spend)}</td>
-                      <td className="px-3 py-2.5 text-right text-gray-600">{formatCurrency(row.revenue)}</td>
+                      <td className="px-3 py-2.5 text-right text-gray-600">{formatCurrencyShort(row.spend)}</td>
+                      <td className="px-3 py-2.5 text-right text-gray-600">{formatCurrencyShort(row.revenue)}</td>
                       <td className={`px-3 py-2.5 text-right font-semibold ${getROASColor(row.roas)}`}>{row.roas}x</td>
                       <td className="px-3 py-2.5 text-right text-gray-600">${row.cac}</td>
                       <td className={`px-3 py-2.5 text-right font-semibold ${getLTVCACColor(row.ltvCac)}`}>{row.ltvCac}x</td>
@@ -470,7 +579,7 @@ export function MarketingROIDashboard() {
                     stroke="#9ca3af"
                     fontSize={11}
                     tickFormatter={(v) => `$${v}K`}
-                    domain={[0, 40]}
+                    domain={[0, Math.max(40, ...scatterData.map(d => d.spend)) * 1.1]}
                   />
                   <YAxis
                     type="number"
@@ -479,11 +588,11 @@ export function MarketingROIDashboard() {
                     stroke="#9ca3af"
                     fontSize={11}
                     tickFormatter={(v) => `$${v}K`}
-                    domain={[0, 100]}
+                    domain={[0, Math.max(100, ...scatterData.map(d => d.revenue)) * 1.1]}
                   />
                   <Tooltip content={<ScatterTooltip />} />
                   <ReferenceLine
-                    segment={[{ x: 0, y: 0 }, { x: 40, y: 40 }]}
+                    segment={[{ x: 0, y: 0 }, { x: 50, y: 50 }]}
                     stroke="#d1d5db"
                     strokeDasharray="5 5"
                     label={{ value: 'ROAS = 1.0x', fill: '#9ca3af', fontSize: 10, position: 'end' }}
@@ -493,7 +602,7 @@ export function MarketingROIDashboard() {
                       <Cell
                         key={`cell-${index}`}
                         fill={getScatterColor(entry.roas)}
-                        r={Math.sqrt(entry.conversions) * 1.5}
+                        r={Math.sqrt(entry.conversions) * 1.2}
                       />
                     ))}
                   </Scatter>
@@ -523,7 +632,7 @@ export function MarketingROIDashboard() {
                     stroke="#9ca3af"
                     fontSize={11}
                     tickFormatter={(v) => `${v}x`}
-                    domain={[2, 4]}
+                    domain={[2, 5]}
                   />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '8px' }}
@@ -566,7 +675,7 @@ export function MarketingROIDashboard() {
 
         {/* ==================== SECTION 5: RECOMMENDATIONS ==================== */}
         <div className="bg-white border-l-4 border-teal-400 rounded-2xl p-6 mt-6 shadow-sm">
-          <h3 className="text-gray-900 font-semibold mb-4">Recommended Actions (Based on Current Period)</h3>
+          <h3 className="text-gray-900 font-semibold mb-4">Recommended Actions (Based on {periodLabels[period]})</h3>
           <div className="space-y-3">
             {recommendations.map((rec, idx) => (
               <div key={idx} className="flex items-start gap-3">
@@ -576,7 +685,7 @@ export function MarketingROIDashboard() {
             ))}
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            Last updated: November 27, 2024 · Based on data from Aug 29 – Nov 27, 2024
+            Last updated: November 27, 2024 · Based on {periodLabels[period].toLowerCase()} data
           </p>
         </div>
 
