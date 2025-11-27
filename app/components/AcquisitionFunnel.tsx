@@ -5,7 +5,7 @@ import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, ComposedChart, ScatterChart, Scatter, Cell
 } from 'recharts'
-import { TrendingUp, TrendingDown, DollarSign, Users, Target, Zap, ArrowRight, ChevronDown } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, Users, Target, Zap, ArrowRight, ChevronDown, CircleDot, Database, Lightbulb, RefreshCw } from 'lucide-react'
 
 // Types
 interface ChannelData {
@@ -223,6 +223,94 @@ const CHANNEL_COLORS: Record<string, string> = {
   'Referral': '#8b5cf6'
 }
 
+// Executive Summary Card Data
+interface SummaryCardData {
+  icon: React.ElementType
+  number: string
+  title: string
+  description: string
+  highlight?: string
+}
+
+const executiveSummaryCards: SummaryCardData[] = [
+  {
+    icon: CircleDot,
+    number: '01',
+    title: 'PROBLEM',
+    description: 'Marketing spend up 40% YoY but acquisition slowed. Which channels to scale vs cut?'
+  },
+  {
+    icon: Database,
+    number: '02',
+    title: 'DATA USED',
+    description: 'GA4 events, Google/Meta/LinkedIn Ads, CRM pipeline. 192K users, $148K spend.'
+  },
+  {
+    icon: Lightbulb,
+    number: '03',
+    title: 'KEY FINDING',
+    description: 'Meta Retargeting: 5.7x ROAS. Referral burns cash at 0.6x. Funnel leaks at Engaged→Lead.',
+    highlight: '70% rev from top 2 channels'
+  },
+  {
+    icon: RefreshCw,
+    number: '04',
+    title: 'RECOMMENDATION',
+    description: 'Cut Referral 80%, shift to Meta Retargeting & Google Search. A/B test landing pages.'
+  },
+  {
+    icon: TrendingUp,
+    number: '05',
+    title: 'EXPECTED IMPACT',
+    description: 'Projected +$52K revenue/quarter. CAC drops from $264 → $217.',
+    highlight: '−18% CAC improvement'
+  }
+]
+
+// Executive Summary Card Component
+const ExecutiveSummaryCard = ({ card }: { card: SummaryCardData }) => {
+  const Icon = card.icon
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col">
+      {/* Top Row: Icon + Step Number */}
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50">
+          <Icon className="h-5 w-5 text-teal-500" />
+        </div>
+        <span className="text-sm font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+          {card.number}
+        </span>
+      </div>
+
+      {/* Title */}
+      <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900 mt-3">
+        {card.title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-xs text-gray-500 leading-relaxed mt-2 flex-1">
+        {card.description}
+      </p>
+
+      {/* Highlight (optional) */}
+      {card.highlight && (
+        <p className="text-xs font-semibold text-teal-600 mt-2">
+          {card.highlight}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// Executive Summary Bar Component
+const ExecutiveSummaryBar = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    {executiveSummaryCards.map((card) => (
+      <ExecutiveSummaryCard key={card.number} card={card} />
+    ))}
+  </div>
+)
+
 export function AcquisitionFunnel() {
   const [period, setPeriod] = useState<Period>('12m')
 
@@ -338,6 +426,9 @@ export function AcquisitionFunnel() {
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
         </div>
       </div>
+
+      {/* Executive Summary Bar */}
+      <ExecutiveSummaryBar />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
