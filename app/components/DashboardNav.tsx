@@ -8,12 +8,12 @@ interface DashboardNavProps {
 }
 
 const sections = [
+  { id: 'acquisition-funnel', label: 'Acquisition & Funnel', icon: Filter, href: '/acquisition-funnel' },
   { id: 'clv-segmentation', label: 'CLV & Segmentation', icon: BarChart3, href: '/clv-segmentation' },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
   { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
   { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },
   { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/sales-pipeline' },
-  { id: 'acquisition-funnel', label: 'Acquisition & Funnel', icon: Filter, href: '/acquisition-funnel' },
 ]
 
 export function DashboardNav({ currentSection }: DashboardNavProps) {
