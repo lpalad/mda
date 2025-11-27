@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, TrendingUp, Search, Zap, Users, BarChart3, Filter } from 'lucide-react'
+import { Home, TrendingUp, Search, Zap, Users, BarChart3, Filter, PieChart } from 'lucide-react'
 
 interface DashboardNavProps {
   currentSection: string
@@ -12,6 +12,7 @@ const sections = [
   { id: 'clv-segmentation', label: 'CLV & Segmentation', icon: BarChart3, href: '/clv-segmentation' },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
   { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
+  { id: 'marketing-roi-dashboard', label: 'Marketing ROI Dashboard', icon: PieChart, href: '/marketing-roi-dashboard' },
   { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },
   { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/sales-pipeline' },
 ]

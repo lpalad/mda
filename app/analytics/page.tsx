@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, Users, Target, Zap, BarChart3, Filter } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Target, Zap, BarChart3, Filter, BarChart2 } from 'lucide-react'
 
 // Branding Header Component
 const BrandingHeader = () => {
@@ -137,6 +137,22 @@ const MiniFunnelStages = () => (
     <div className="h-[5px] w-[65%] rounded-full bg-teal-500/60" />
     <div className="h-[5px] w-[45%] rounded-full bg-teal-500/75" />
     <div className="h-[5px] w-[30%] rounded-full bg-teal-500" />
+  </div>
+)
+
+const MiniROIGauge = () => (
+  <div className="mt-3 flex h-10 items-center gap-2">
+    <div className="relative h-10 w-10">
+      <svg className="h-10 w-10 -rotate-90" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="16" fill="none" stroke="#f1f5f9" strokeWidth="4" />
+        <circle cx="20" cy="20" r="16" fill="none" stroke="#14b8a6" strokeWidth="4" strokeDasharray="75 100" strokeLinecap="round" />
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-teal-600">4.2x</span>
+    </div>
+    <div className="flex flex-col gap-0.5 text-[10px] text-slate-500">
+      <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-teal-500" /> ROAS</span>
+      <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> +12% MoM</span>
+    </div>
   </div>
 )
 
@@ -363,6 +379,18 @@ export default function DashboardHub() {
             footer="Track spend to revenue."
             visual={<MiniFunnelStages />}
             href="/acquisition-funnel"
+          />
+
+          {/* Marketing ROI Dashboard */}
+          <SectionCard
+            icon={BarChart2}
+            title="Marketing ROI Dashboard"
+            kpi="4.2x ROAS"
+            subtitle="Full channel attribution with spend vs revenue analysis."
+            status="Detailed view"
+            footer="Deep dive into ROI."
+            visual={<MiniROIGauge />}
+            href="/marketing-roi-dashboard"
           />
 
           {/* Predictive Analytics Card spanning full width */}
