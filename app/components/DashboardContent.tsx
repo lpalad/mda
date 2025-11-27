@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { LeadQualityAnalytics } from '@/app/components/LeadQualityAnalytics'
-import { MarketingROI } from '@/app/components/SectionMarketing-ROI'
+import { AcquisitionFunnel } from '@/app/components/AcquisitionFunnel'
 import { PartnerPerformance } from '@/app/components/SectionPartnerPerformance'
 import { SalesPipeline } from '@/app/components/SectionSalesPipeline'
 import { CLVDashboard } from '@/app/components/CLVDashboard'
@@ -11,9 +11,9 @@ import { Lead } from '@/app/types/lead'
 import { TrendingUp, Search, Zap, Users, BarChart3, Home } from 'lucide-react'
 
 const sidebarSections = [
+  { id: 'acquisition-funnel', label: 'Acquisition & Funnel', icon: TrendingUp, href: '/acquisition-funnel' },
   { id: 'clv-segmentation', label: 'CLV & Segmentation', icon: BarChart3, href: '/clv-segmentation' },
   { id: 'lead-quality', label: 'Lead Quality Analytics', icon: Search, href: '/lead-quality' },
-  { id: 'marketing-roi', label: 'Marketing ROI', icon: TrendingUp, href: '/marketing-roi' },
   { id: 'partner-performance', label: 'Partner Performance', icon: Users, href: '/partner-performance' },
   { id: 'sales-pipeline', label: 'Sales Pipeline', icon: Zap, href: '/sales-pipeline' },
 ]
@@ -71,9 +71,9 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
             <LeadQualityAnalytics leads={filteredLeads} />
           )}
 
-          {/* Marketing ROI Section */}
-          {currentSection === 'marketing-roi' && (
-            <MarketingROI />
+          {/* Acquisition & Funnel Section */}
+          {currentSection === 'acquisition-funnel' && (
+            <AcquisitionFunnel />
           )}
 
           {/* Partner Performance Section */}
@@ -90,7 +90,7 @@ export function DashboardContent({ filteredLeads }: DashboardContentProps) {
           )}
 
           {/* Placeholder for other sections */}
-          {currentSection !== 'lead-quality' && currentSection !== 'marketing-roi' && currentSection !== 'partner-performance' && currentSection !== 'sales-pipeline' && currentSection !== 'clv-segmentation' && (
+          {currentSection !== 'lead-quality' && currentSection !== 'acquisition-funnel' && currentSection !== 'partner-performance' && currentSection !== 'sales-pipeline' && currentSection !== 'clv-segmentation' && (
             <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">
                 {sidebarSections.find((s) => s.id === currentSection)?.label}
