@@ -1,6 +1,18 @@
-# Lead Quality Analytics Dashboard
+# Revenue Intelligence Hub
 
-A modern, interactive B2B analytics dashboard built for a law firm case study. This portfolio project demonstrates advanced marketing data analytics, predictive modeling, and business intelligence capabilities.
+**Author:** Leonard S Palad
+
+**What this shows:**
+- End-to-end marketing analytics case study (lead quality, CLV, channels, funnel)
+- Built in Next.js + TypeScript + Tailwind + Recharts, deployed to AWS S3
+- 1,200+ synthetic leads across 6 channels with realistic patterns
+- Designed for CMOs/RevOps: see ROI, pipeline, and risk in one place
+
+This repo powers the **Revenue Intelligence Hub** (CLV & Lead Quality dashboards) live demo: https://salesconnect.com.au/analytics/
+
+---
+
+A modern, interactive B2B analytics dashboard built as a synthetic law firm case study. All data and outcomes are simulated for portfolio purposes. This project demonstrates advanced marketing data analytics, predictive modeling, and business intelligence capabilities.
 
 ## 🎯 Project Overview
 
@@ -8,7 +20,7 @@ A modern, interactive B2B analytics dashboard built for a law firm case study. T
 
 **The Solution:** A comprehensive Lead Quality Analytics dashboard powered by predictive modeling and data visualization.
 
-**The Outcome:** By implementing data-driven recommendations, the firm increased qualified pipeline by 35% while reducing customer acquisition costs by 18%.
+**The Outcome (modeled):** In a simulated scenario, the recommendations increase qualified pipeline by 35% and reduce customer acquisition costs by 18%.
 
 ---
 
@@ -283,6 +295,6 @@ Created as a portfolio project to demonstrate:
 
 ---
 
-**Live Demo**: [Deploy to Vercel](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Flpalad%2Fmda)
+**Live Demo**: https://salesconnect.com.au/analytics/
 
 **Repository**: https://github.com/lpalad/mda

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, Users, Target, Zap, BarChart3 } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Target, Zap, BarChart3, Filter } from 'lucide-react'
 
 // Branding Header Component
 const BrandingHeader = () => {
@@ -127,6 +127,16 @@ const MiniSegments = () => (
       <div className="h-1.5 rounded-sm bg-blue-500/80" />
       <div className="h-1.5 rounded-sm bg-violet-500/80" />
     </div>
+  </div>
+)
+
+const MiniFunnelStages = () => (
+  <div className="mt-3 flex h-10 flex-col items-center justify-center gap-0.5">
+    <div className="h-[5px] w-full rounded-full bg-teal-500/30" />
+    <div className="h-[5px] w-[85%] rounded-full bg-teal-500/45" />
+    <div className="h-[5px] w-[65%] rounded-full bg-teal-500/60" />
+    <div className="h-[5px] w-[45%] rounded-full bg-teal-500/75" />
+    <div className="h-[5px] w-[30%] rounded-full bg-teal-500" />
   </div>
 )
 
@@ -341,6 +351,18 @@ export default function DashboardHub() {
             footer="Know your best customers."
             visual={<MiniSegments />}
             href="/clv-segmentation"
+          />
+
+          {/* Acquisition & Funnel */}
+          <SectionCard
+            icon={Filter}
+            title="Acquisition & Funnel"
+            kpi="8.5x ROAS"
+            subtitle="Channel spend efficiency and conversion funnel health."
+            status="Efficient"
+            footer="Track spend to revenue."
+            visual={<MiniFunnelStages />}
+            href="/acquisition-funnel"
           />
 
           {/* Predictive Analytics Card spanning full width */}
