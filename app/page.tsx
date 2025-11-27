@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, Users, Target, Zap, PieChart, BarChart2 } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Target, Zap, PieChart, Filter, BarChart2 } from 'lucide-react'
 
 // Branding Header Component
 const BrandingHeader = () => {
@@ -102,6 +102,16 @@ const MiniDonut = () => (
         Working / Disqualified
       </p>
     </div>
+  </div>
+)
+
+const MiniFunnelStages = () => (
+  <div className="mt-3 flex h-10 flex-col items-center justify-center gap-0.5">
+    <div className="h-[5px] w-full rounded-full bg-teal-500/30" />
+    <div className="h-[5px] w-[85%] rounded-full bg-teal-500/45" />
+    <div className="h-[5px] w-[65%] rounded-full bg-teal-500/60" />
+    <div className="h-[5px] w-[45%] rounded-full bg-teal-500/75" />
+    <div className="h-[5px] w-[30%] rounded-full bg-teal-500" />
   </div>
 )
 
@@ -274,52 +284,16 @@ export default function DashboardHub() {
 
         {/* Dashboard Cards Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Marketing ROI */}
+          {/* Acquisition & Funnel */}
           <SectionCard
-            icon={TrendingUp}
-            title="Marketing ROI"
-            kpi="3.4x"
-            subtitle="Attribution model across all paid & owned channels."
-            status="High impact"
-            footer="See what pays."
-            visual={<MiniBars />}
-            href="/marketing-roi"
-          />
-
-          {/* Lead Quality */}
-          <SectionCard
-            icon={Target}
-            title="Lead Quality"
-            kpi="78% SQL"
-            subtitle="Conversion from MQL to SQL by channel."
-            status="Strong"
-            footer="Know who converts."
-            visual={<MiniDonut />}
-            href="/lead-quality"
-          />
-
-          {/* Sales Pipeline */}
-          <SectionCard
-            icon={Zap}
-            title="Sales Pipeline"
-            kpi="$4.2M"
-            subtitle="Open pipeline across all stages."
-            status="3.1x coverage"
-            footer="Where deals move."
-            visual={<MiniFunnel />}
-            href="/sales-pipeline"
-          />
-
-          {/* Partner Performance */}
-          <SectionCard
-            icon={Users}
-            title="Partner Performance"
-            kpi="$1.1M"
-            subtitle="Partner-sourced revenue and cycle time."
-            status="Strategic"
-            footer="Real contribution."
-            visual={<MiniSpark />}
-            href="/partner-performance"
+            icon={Filter}
+            title="Acquisition & Funnel"
+            kpi="8.5x ROAS"
+            subtitle="Channel spend efficiency and conversion funnel health."
+            status="Efficient"
+            footer="Track spend to revenue."
+            visual={<MiniFunnelStages />}
+            href="/acquisition-funnel"
           />
 
           {/* Client Lifetime Value */}
@@ -334,6 +308,18 @@ export default function DashboardHub() {
             href="/client-lifetime-value"
           />
 
+          {/* Lead Quality */}
+          <SectionCard
+            icon={Target}
+            title="Lead Quality"
+            kpi="78% SQL"
+            subtitle="Conversion from MQL to SQL by channel."
+            status="Strong"
+            footer="Know who converts."
+            visual={<MiniDonut />}
+            href="/lead-quality"
+          />
+
           {/* Marketing ROI Dashboard */}
           <SectionCard
             icon={BarChart2}
@@ -344,6 +330,30 @@ export default function DashboardHub() {
             footer="Deep dive into ROI."
             visual={<MiniROIGauge />}
             href="/marketing-roi-dashboard"
+          />
+
+          {/* Partner Performance */}
+          <SectionCard
+            icon={Users}
+            title="Partner Performance"
+            kpi="$1.1M"
+            subtitle="Partner-sourced revenue and cycle time."
+            status="Strategic"
+            footer="Real contribution."
+            visual={<MiniSpark />}
+            href="/partner-performance"
+          />
+
+          {/* Sales Pipeline */}
+          <SectionCard
+            icon={Zap}
+            title="Sales Pipeline"
+            kpi="$4.2M"
+            subtitle="Open pipeline across all stages."
+            status="3.1x coverage"
+            footer="Where deals move."
+            visual={<MiniFunnel />}
+            href="/sales-pipeline"
           />
 
           {/* Predictive Analytics Card spanning full width */}
