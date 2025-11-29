@@ -1,182 +1,213 @@
 # Revenue Intelligence Hub
 
-**Author:** Leonard S Palad
+**Author:** Leonard S Palad - Principal Business Analyst
 
 **What this shows:**
-- End-to-end marketing analytics case study (lead quality, CLV, channels, funnel)
-- Built in Next.js + TypeScript + Tailwind + Recharts, deployed to AWS S3
+- End-to-end marketing analytics case study (lead quality, CLV, channels, funnel, pipeline, ROI)
+- Built in Next.js 14 + TypeScript + Tailwind CSS + Recharts, deployed to AWS S3
 - 1,200+ synthetic leads across 6 channels with realistic patterns
-- Designed for CMOs/RevOps: see ROI, pipeline, and risk in one place
+- Designed for CMOs and RevOps leaders: see ROI, pipeline, and risk in one place
 
-This repo powers the **Revenue Intelligence Hub** (CLV & Lead Quality dashboards) live demo: https://salesconnect.com.au/analytics/
+This repo powers the **Revenue Intelligence Hub** live demo: https://salesconnect.com.au/analytics/
 
 ---
 
-A modern, interactive B2B analytics dashboard built as a synthetic law firm case study. All data and outcomes are simulated for portfolio purposes. This project demonstrates advanced marketing data analytics, predictive modeling, and business intelligence capabilities.
+A modern, interactive B2B analytics dashboard built as a synthetic case study. All data and outcomes are simulated for portfolio purposes. This project demonstrates advanced marketing data analytics, predictive modeling, and business intelligence capabilities.
 
-## 🎯 Project Overview
+## Project Overview
 
-**The Challenge:** A growing law firm had no visibility into which marketing channels drive quality leads, how leads move through the sales funnel, or where to optimize marketing budgets.
+**The Challenge:** Growing businesses often lack visibility into which marketing channels drive quality leads, how leads move through the sales funnel, or where to optimize marketing budgets.
 
-**The Solution:** A comprehensive Lead Quality Analytics dashboard powered by predictive modeling and data visualization.
+**The Solution:** A comprehensive Revenue Intelligence Hub with 6 specialized dashboards powered by predictive modeling and data visualization.
 
 **The Outcome (modeled):** In a simulated scenario, the recommendations increase qualified pipeline by 35% and reduce customer acquisition costs by 18%.
 
 ---
 
-## 🎨 Dashboard Sections
+## Dashboard Sections
 
-### Section A: Lead Quality Summary
-- At-a-glance KPI metrics (Quality Score, High-Quality %, Conversion Rate, Cost per HQ Lead)
-- Trend indicators showing period-over-period performance
-- Key insights with business impact projections
+### 1. Acquisition & Funnel
+- Channel spend efficiency and conversion funnel health
+- ROAS analysis across all marketing channels
+- Executive summary with problem-data-finding-recommendation framework
+- Funnel stage visualization with drop-off identification
 
-### Section B: Predictive Lead Quality Model
-- Machine learning feature importance visualization
-- Top factors driving conversion (Firm Size, Referral Source, Engagement)
-- Model performance metrics (87.3% accuracy, 84.2% precision)
-- Actionable insights on lead prioritization
+### 2. CLV & Segmentation
+- Customer segments by RFM (Recency, Frequency, Monetary) analysis
+- Lifetime value calculations by segment (SMB, Mid-Market, Enterprise)
+- LTV:CAC ratio analysis
+- Segment-specific recommendations
 
-### Section C: Lead Source Breakdown
-- Channel performance analysis with volume and quality metrics
-- Interactive bar chart comparing lead volume vs. quality by channel
-- Detailed metrics table: ROI, Cost per HQ Lead, Conversion Rate
-- Strategic recommendations for budget reallocation
+### 3. Lead Quality Analytics
+- Predictive lead quality scoring model
+- MQL to SQL conversion analysis by channel
+- Feature importance visualization for lead scoring
+- Quality tier segmentation (High/Medium/Low)
 
-### Section D: Lead Journey Funnel
-- Multi-stage funnel visualization: Awareness → Interest → Booking → Consultation → Conversion
-- Quality tier overlay (High/Medium/Low) at each stage
-- Drop-off identification and bottleneck analysis
-- Revenue recovery insights from optimization opportunities
+### 4. Marketing ROI Dashboard
+- Full channel attribution with spend vs revenue analysis
+- Detailed ROAS breakdown by channel
+- Month-over-month performance trends
+- Budget optimization recommendations
 
-### Section E: High-Quality Lead Profile
-- Persona development based on actual data patterns
-- Key characteristics: Firm size, industry, engagement level, communication preference
-- Implications for marketing targeting and content strategy
-- Outreach strategy recommendations
+### 5. Partner Performance
+- Partner-sourced revenue tracking
+- Cycle time analysis
+- Partner tier performance comparison
+- Strategic partner insights
 
-### Section F: Actions & Recommendations
-- Data-driven recommendations prioritized by impact and effort
-- 90-day implementation roadmap with phased approach
-- Expected outcomes and success metrics
-- Strategic guidance on execution
+### 6. Sales Pipeline
+- Open pipeline across all stages
+- Pipeline coverage ratios
+- Deal velocity metrics
+- Stage conversion analysis
+
+### Predictive Analytics (Home Page)
+- 90-day revenue forecast
+- Confidence interval visualization
+- Risk assessment (Low/Medium/High)
+- Model trained on 18 months of historical data
 
 ---
 
-## 📊 Key Features
+## Key Features
 
-- **Interactive Global Filters**: Time period selector affecting all sections
-  - Last 3 Months
-  - Last 6 Months
-  - Last 12 Months
-  - Month-by-Month
+- **Interactive Period Filters**: Time period selectors affecting all sections
+  - Last 7 Days
+  - Last 30 Days
+  - Last 90 Days
+  - Year to Date
+  - All Time
 
 - **Rich Data Visualization**:
   - Bar charts with dual-axis (Recharts)
   - Funnel visualization with quality segmentation
-  - Performance heatmaps
-  - Metric cards with trend indicators
+  - KPI circles with animated progress
+  - Trend sparklines and heatmaps
+  - Executive summary cards
 
 - **1,200+ Synthetic Lead Records**:
   - 12 months of realistic data
-  - Multiple lead sources (Google Ads, LinkedIn, Referrals, SEO, Social Media, Email)
+  - 6 lead sources (Google Ads, LinkedIn, Referrals, SEO, Social Media, Email)
   - Realistic quality distributions by channel
   - Proper conversion patterns correlated with quality tiers
 
 - **Modern B2B Design**:
-  - Teal/turquoise color scheme
   - Clean, professional aesthetic
-  - Responsive layout
-  - Smooth transitions and interactions
+  - Responsive layout for all devices
+  - Smooth transitions and animations
+  - Branding header with real-time date/time
 
-- **Story-Driven Narrative**:
-  - Business problem statement
-  - Solution approach
-  - Measurable outcomes
-  - Actionable recommendations
+- **Executive Summary Framework**:
+  - Problem statement
+  - Data used
+  - Key findings
+  - Recommendations
+  - Expected impact
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Framework**: Next.js 14 with TypeScript
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **State Management**: Zustand (global filter state)
 - **Charts**: Recharts
 - **Icons**: Lucide React
+- **Deployment**: AWS S3 (static export)
 - **Package Manager**: npm
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 /app
-  /components
-    Header.tsx                          # Navigation & global filters
-    SectionA-LeadQualitySummary.tsx    # Lead quality metrics
-    SectionB-PredictiveModel.tsx       # ML feature importance
-    SectionC-LeadSourceBreakdown.tsx   # Channel performance
-    SectionD-LeadJourney.tsx           # Funnel visualization
-    SectionE-LeadProfile.tsx           # Persona insights
-    SectionF-Recommendations.tsx       # Actions & roadmap
+  page.tsx                              # Home - Revenue Intelligence Hub
 
-  /dashboard
-    page.tsx                           # Main dashboard page
+  /analytics
+    page.tsx                            # Analytics Hub (alternate entry)
+
+    /acquisition-funnel
+      page.tsx                          # Acquisition & Funnel dashboard
+
+    /clv-segmentation
+      page.tsx                          # CLV & Segmentation dashboard
+
+    /lead-quality
+      page.tsx                          # Lead Quality Analytics dashboard
+
+    /marketing-roi-dashboard
+      page.tsx                          # Marketing ROI Dashboard
+
+    /partner-performance
+      page.tsx                          # Partner Performance dashboard
+
+    /sales-pipeline
+      page.tsx                          # Sales Pipeline dashboard
+
+  /components
+    AcquisitionFunnel.tsx               # Acquisition funnel component
+    BrandingHeader.tsx                  # Page branding header
+    CLVDashboard.tsx                    # CLV analysis component
+    DashboardContent.tsx                # Main dashboard wrapper
+    DashboardNav.tsx                    # Sidebar navigation
+    LeadQualityAnalytics.tsx            # Lead quality component
+    MarketingROIDashboard.tsx           # Marketing ROI component
+    SectionPartnerPerformance.tsx       # Partner performance component
+    SectionSalesPipeline.tsx            # Sales pipeline component
 
   /lib
-    generateData.ts                    # Synthetic data generation
-    store.ts                           # Zustand state management
+    generateData.ts                     # Synthetic data generation
+    store.ts                            # State management
 
   /types
-    lead.ts                            # TypeScript interfaces
+    lead.ts                             # TypeScript interfaces
 
-  /data
-    (JSON data generated at runtime)
-
-  globals.css                          # Global styles
-  layout.tsx                           # Root layout
-  page.tsx                             # Root page (redirects to dashboard)
+  globals.css                           # Global styles
+  layout.tsx                            # Root layout
 ```
 
 ---
 
-## 🎓 What This Demonstrates
+## What This Demonstrates
 
 ### Marketing Analytics Skills
 - Lead quality scoring and segmentation
 - Channel performance analysis and ROI calculation
 - Funnel analysis and drop-off identification
 - Budget allocation optimization
-- Predictive analytics for lead prioritization
+- Customer lifetime value analysis
+- Partner channel attribution
 
 ### Data Visualization
 - Multi-dimensional data representation
 - Clear, actionable insights from complex data
-- Interactive charts with drill-down capability
+- Interactive charts with period filtering
 - Trend analysis and KPI tracking
+- Executive summary frameworks
 
 ### Business Intelligence
 - Data-driven decision making
 - Strategic recommendations with quantified impact
-- Implementation roadmaps
+- 5-step insight framework (Problem, Data, Finding, Recommendation, Impact)
 - Success metrics and KPI definitions
 
 ### Technical Skills
-- Next.js and modern React patterns
+- Next.js 14 App Router architecture
 - TypeScript for type safety
-- State management with Zustand
-- Data visualization with Recharts
+- Recharts for interactive visualizations
 - Tailwind CSS for professional UI/UX
-- Responsive design
+- Static site generation for AWS S3 deployment
+- Responsive design patterns
 
 ---
 
-## 🏃 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
+- npm
 
 ### Installation
 
@@ -197,33 +228,52 @@ Visit `http://localhost:3000` to see the dashboard.
 ### Build for Production
 
 ```bash
+# Build static export
 npm run build
-npm start
+
+# Output in /out directory for S3 deployment
 ```
 
 ---
 
-## 📈 Sample Data Patterns
+## Deployment
+
+This project is configured for static export to AWS S3:
+
+```javascript
+// next.config.js
+const nextConfig = {
+  output: 'export',
+  basePath: '/analytics',
+  trailingSlash: true,
+}
+```
+
+Deploy the `/out` directory to your S3 bucket configured for static website hosting.
+
+---
+
+## Sample Data Patterns
 
 The synthetic dataset includes:
 
 - **6 Marketing Channels** with realistic quality distributions:
-  - Paid Search: 52% high-quality, $85 cost per lead
-  - LinkedIn: 48% high-quality, $120 cost per lead
-  - Referrals: 75% high-quality, $50 cost per lead
-  - SEO: 45% high-quality, $40 cost per lead
-  - Social Media: 22% high-quality, $35 cost per lead
-  - Email: 40% high-quality, $25 cost per lead
+  - Google Ads: High volume, moderate quality
+  - LinkedIn Ads: Premium quality, higher cost
+  - Referrals: Highest conversion rate
+  - Organic Search: Cost-efficient, steady quality
+  - Meta Ads: High retargeting ROAS
+  - Email Marketing: Nurture-focused
 
-- **5 Law Practice Areas**: Corporate Law, Family Law, IP, Litigation, Real Estate
+- **Customer Segments**: SMB, Mid-Market, Enterprise with distinct CLV patterns
 
 - **Realistic Conversion Patterns**: Quality tier strongly correlates with conversion rate
 
-- **Lead Funnel Stages**: Awareness → Interest → Booking → Consultation → Conversion
+- **Pipeline Stages**: Prospect, Qualified, Proposal, Negotiation, Closed
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 This dashboard is ideal for:
 
@@ -235,40 +285,21 @@ This dashboard is ideal for:
 
 ---
 
-## 🔮 Future Enhancements
+## Key Metrics Explained
 
-Potential additions to expand the project:
+**Lead Quality Score** (0-100): Composite score based on firm size, engagement level, lead source, and industry vertical.
 
-- [ ] Real backend with PostgreSQL database
-- [ ] User authentication and role-based access
-- [ ] CSV/Excel export functionality
-- [ ] Advanced filters (industry, firm size, date range)
-- [ ] Drill-down drill-through interactions
-- [ ] A/B testing results section
-- [ ] Real-time data updates with WebSockets
-- [ ] Custom report builder
-- [ ] Predictive forecasting (trend projections)
-- [ ] Competitor benchmarking section
+**ROAS (Return on Ad Spend)**: Revenue generated per dollar spent on advertising.
+
+**LTV:CAC Ratio**: Customer lifetime value divided by customer acquisition cost. Target is 3:1 or higher.
+
+**Pipeline Coverage**: Total pipeline value divided by quota. Target is 3x or higher.
+
+**SQL Conversion Rate**: Percentage of MQLs that convert to Sales Qualified Leads.
 
 ---
 
-## 📊 Key Metrics Explained
-
-**Lead Quality Score** (0-100): Composite score based on:
-- Firm size (larger = better fit)
-- Engagement level (website activity, content downloads, email opens)
-- Lead source (some channels naturally higher quality)
-- Industry vertical (some sectors more valuable)
-
-**Conversion Rate**: Percentage of leads that convert to actual clients. High-quality leads show 4-8x better conversion rates.
-
-**Cost per High-Quality Lead**: Total marketing spend divided by number of high-quality leads generated. Lower is better.
-
-**ROI**: (Revenue - Total Cost) / Total Cost × 100. Measures return on marketing investment by channel.
-
----
-
-## 🤝 Contributing
+## Contributing
 
 This is a portfolio project, but feel free to:
 - Fork and adapt for your own use case
@@ -277,15 +308,15 @@ This is a portfolio project, but feel free to:
 
 ---
 
-## 📄 License
+## License
 
 MIT License - feel free to use this project as a template for your own portfolio.
 
 ---
 
-## 👤 About
+## About
 
-Created as a portfolio project to demonstrate:
+Created by Leonard S Palad as a portfolio project to demonstrate:
 - Marketing data analytics expertise
 - Advanced dashboard design
 - Business intelligence capabilities
