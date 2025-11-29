@@ -119,6 +119,20 @@ A modern, interactive B2B analytics dashboard built as a synthetic case study. A
 
 ---
 
+## Programming Languages
+
+- **TypeScript (.ts)** – Core business logic, data generation, state management
+- **TypeScript + React (.tsx)** – UI components and page templates
+- **CSS (.css)** – Styling and layout
+- **JavaScript (.js)** – Configuration files (Next.js)
+- **YAML (.yml)** – CI/CD deployment pipeline
+- **JSON** – Package management and configuration
+- **Markdown (.md)** – Documentation
+
+**Frontend-only architecture:** No backend language required – static export deployed to AWS S3.
+
+---
+
 ## Project Structure
 
 ```
@@ -321,6 +335,8 @@ Created by Leonard S Palad as a portfolio project to demonstrate:
 - Advanced dashboard design
 - Business intelligence capabilities
 - Modern full-stack development skills
+
+Implementation refined with Claude Code for code quality and best practices.
 
 **Perfect for:** Data analysts, marketing analysts, business intelligence professionals, and full-stack developers looking to showcase BI skills.
 
